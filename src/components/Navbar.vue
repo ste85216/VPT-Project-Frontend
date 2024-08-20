@@ -18,7 +18,7 @@
             class="pa-0"
             density="compact"
           >
-            <div style="background-image: url(../../src/assets/drawer_bg2.webp); background-size:380px 250px; background-position: bottom left">
+            <div style="background-image: url('/src/assets/drawer_bg2.webp'); background-size:380px 250px; background-position: bottom left">
               <v-list-item class="px-6 pa-4">
                 <v-row
                   no-gutters
@@ -85,7 +85,7 @@
             class="pa-0"
             density="compact"
           >
-            <div style="background-image: url(../../src/assets/drawer_bg_admin.webp); background-size:380px 250px; background-position: bottom left">
+            <div style="background-image: url('/src/assets/drawer_bg_admin.webp'); background-size:380px 250px; background-position: bottom left">
               <v-list-item class="px-6 pa-4">
                 <v-row
                   no-gutters
@@ -108,7 +108,7 @@
             <div
               class="text-white d-flex align-center justify-center"
               style="font-size: 16px; line-height: 32px; font-weight: 600; letter-spacing: 2px; height: 120px;
-              background-image: url(../../src/assets/men.jpg);background-size: cover; text-shadow: 0 0 10px rgba(0,0,0,1);"
+              background-image: url('/src/assets/men.jpg');background-size: cover; text-shadow: 0 0 10px rgba(0,0,0,1);"
             >
               今天是個適合加入<br>VPT的好日子呢!
             </div>
