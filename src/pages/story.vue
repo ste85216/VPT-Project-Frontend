@@ -16,6 +16,12 @@
           class="logo-animate"
         >
       </div>
+      <v-icon
+        ref="downIcon"
+        class="down-icon"
+      >
+        mdi-chevron-double-down
+      </v-icon>
       <div
         ref="topTitleRight"
         class="top-title-2"
@@ -192,6 +198,7 @@ const animationRef = ref()
 const endLottieRef = ref()
 const topTitleLeft = ref()
 const topTitleRight = ref()
+const downIcon = ref()
 
 onMounted(() => {
   if (animationRef.value) {
@@ -210,8 +217,9 @@ onMounted(() => {
   // 步驟 1: 設置初始狀態
   // 將左邊標題移到畫面上方看不見的位置
   // 添加檢查
-  console.log('topTitleLeft ref:', topTitleLeft.value)
-  console.log('topTitleRight ref:', topTitleRight.value)
+  // console.log('topTitleLeft ref:', topTitleLeft.value)
+  // console.log('topTitleRight ref:', topTitleRight.value)
+  // console.log('downIcon ref:', downIcon.value)
 
   // 確保元素存在後再設置動畫
   if (topTitleLeft.value && topTitleRight.value) {
@@ -229,12 +237,12 @@ onMounted(() => {
         trigger: '.top-title',
         start: '20% top ', // 調整觸發點
         end: 'center bottom',
-        scrub: 4,
+        scrub: 4
         // markers: true,
-        onEnter: () => console.log('Left title animation started'),
-        onEnterBack: () => console.log('Left title animation started (reverse)'),
-        onLeave: () => console.log('Left title animation completed'),
-        onLeaveBack: () => console.log('Left title animation completed (reverse)')
+        // onEnter: () => console.log('Left title animation started'),
+        // onEnterBack: () => console.log('Left title animation started (reverse)'),
+        // onLeave: () => console.log('Left title animation completed'),
+        // onLeaveBack: () => console.log('Left title animation completed (reverse)')
       }
     })
 
@@ -250,6 +258,24 @@ onMounted(() => {
         end: 'bottom center', // 當 top-container 的底部到達視窗中心時結束
         scrub: 4 // 平滑滾動效果
         // markers: true // 顯示標記，方便調試
+      }
+    })
+  }
+
+  // 為下箭頭圖標添加淡出動畫
+  if (downIcon.value) {
+    gsap.to(downIcon.value.$el, {
+      opacity: 0,
+      y: 50, // 添加向下移動的效果
+      duration: 0.5,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '.top-container',
+        start: 'top top',
+        end: '40% top',
+        scrub: 2,
+        toggleActions: 'play none none reverse'
+        // markers: true // 啟用標記以便調試
       }
     })
   }
@@ -335,15 +361,14 @@ function LottieScrollTrigger (vars) {
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
+    }
     .top-title-2 {
     width: 100%;
     position: fixed;
     text-align: center;
     top: 55%;
-
-  }
-  p {
+    }
+    p {
       font-size: 32px;
       font-weight: 550;
       text-shadow:
@@ -352,6 +377,15 @@ function LottieScrollTrigger (vars) {
         0 0 40px #fff;
       font-family: 'Bebas Neue';
       letter-spacing: 2px;
+    }
+    .down-icon {
+      position: fixed;
+      bottom: 10%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      color: #fff;
+      animation: animationDown 1.5s infinite;
     }
   }
 
@@ -461,6 +495,18 @@ function LottieScrollTrigger (vars) {
     }
     100% {
       transform: translate(-15%, -20%);
+    }
+  }
+
+  @keyframes animationDown {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(15px);
+    }
+    100% {
+      transform: translateY(0);
     }
   }
 
