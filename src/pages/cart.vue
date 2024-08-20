@@ -347,15 +347,14 @@ const updateQuantity = async (item, newQuantity = null) => {
     return
   }
 
+  const quantity = newQuantity !== null ? newQuantity : item.quantity
+
   try {
-    loading.value = true
-    const quantity = newQuantity !== null ? newQuantity : item.quantity
     await user.addCart(item.p_id._id, quantity, item.colors, item.sizes)
-    await user.loadCart() // 重新加載購物車數據以確保同步
+    // 重新加載整個購物車
+    await user.loadCart()
   } catch (error) {
     handleError(error)
-  } finally {
-    loading.value = false
   }
 }
 
