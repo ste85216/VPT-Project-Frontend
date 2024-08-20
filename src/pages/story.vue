@@ -16,12 +16,16 @@
           class="logo-animate"
         >
       </div>
-      <v-icon
-        ref="downIcon"
-        class="down-icon"
+      <div
+        class="down-icon-container"
       >
-        mdi-chevron-double-down
-      </v-icon>
+        <v-icon
+          ref="downIcon"
+          class="down-icon"
+        >
+          mdi-chevron-double-down
+        </v-icon>
+      </div>
       <div
         ref="topTitleRight"
         class="top-title-2"
@@ -378,11 +382,13 @@ function LottieScrollTrigger (vars) {
       font-family: 'Bebas Neue';
       letter-spacing: 2px;
     }
-    .down-icon {
+    .down-icon-container {
       position: fixed;
       bottom: 10%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      left: 49%;
+      transform: translateX(-50%);
+    }
+    .down-icon {
       font-size: 80px;
       color: #fff;
       animation: animationDown 1.5s infinite;
