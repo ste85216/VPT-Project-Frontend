@@ -504,12 +504,6 @@ onMounted(loadUserData)
   * {
     font-family: "Noto sans tc";
   }
-  .member-drawer-bg {
-    background: url(/src/assets/drawer_bg_member.webp);
-    background-size: 380px 250px;
-    background-position: bottom left;
-  }
-
   #nav_logo {
     height: 70px;
     color: transparent;
