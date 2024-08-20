@@ -19,7 +19,7 @@
             density="compact"
           >
             <div
-              class="member-drawer-bg"
+              :style="backgroundStyle"
             >
               <v-list-item class="px-6 pa-4">
                 <v-row
@@ -390,6 +390,13 @@ import { useSnackbar } from 'vuetify-use-dialog'
 import { useRoute } from 'vue-router'
 import CartIcon from '@/components/CartIcon.vue'
 import { storeToRefs } from 'pinia'
+import memberDrawerImg from '../assets/drawer_bg2.webp'
+
+const backgroundStyle = computed(() => ({
+  backgroundImage: `url(${memberDrawerImg})`,
+  backgroundSize: '380px 250px',
+  backgroundPosition: 'bottom left'// 設定背景圖片全螢幕
+}))
 
 const { mdAndUp } = useDisplay()
 const user = useUserStore()
