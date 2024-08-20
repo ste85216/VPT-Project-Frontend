@@ -1,0 +1,22 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://vuetifyjs.com/features/sass-variables/`
+// @use 'vuetify/settings' with (
+//   $application-background: #000 // Set the application background color to black
+// );
+
+@import '_variables';
+
+@import '_rwd';
+
+@import '_colors';
+
+@import '_admincolor';
+
+@import '_productpagelayout';
+
+@import '_global';
