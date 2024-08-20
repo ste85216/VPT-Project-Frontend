@@ -18,7 +18,9 @@
             class="pa-0"
             density="compact"
           >
-            <div style="background: url(/src/assets/drawer_bg2.webp); background-size:380px 250px; background-position: bottom left">
+            <div
+              class="member-drawer-bg"
+            >
               <v-list-item class="px-6 pa-4">
                 <v-row
                   no-gutters
@@ -477,6 +479,12 @@ onMounted(loadUserData)
   * {
     font-family: "Noto sans tc";
   }
+  .member-drawer-bg {
+    background: url(/src/assets/drawer_bg_member.webp);
+    background-size: 380px 250px;
+    background-position: bottom left;
+  }
+
   #nav_logo {
     height: 70px;
     color: transparent;
