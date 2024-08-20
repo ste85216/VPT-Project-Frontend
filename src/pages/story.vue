@@ -395,7 +395,7 @@ function LottieScrollTrigger (vars) {
     content: "";
     background: url(/src/assets/noise.jpg) ;
     width: 200%;
-    height: 100%;
+    height: 150%;
     position: fixed;
     top: 0;
     left: 0;
