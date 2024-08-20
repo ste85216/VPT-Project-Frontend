@@ -1,7 +1,7 @@
 <template>
   <v-container
-    class="px-4 px-lg-0 py-0 mt-10 h-75"
-    style="max-width: 1200px;"
+    class="px-4 px-lg-0 py-0 mt-10 mb-16"
+    style="max-width: 1200px; min-height: 1200px;"
   >
     <h2 class="mb-5">
       購物車
@@ -37,7 +37,7 @@
               class="d-flex align-center justify-center"
             >
               <v-img
-                :src="item.p_id.images[0]"
+                :src="item.p_id?.images?.[0]"
                 elevation="0"
                 height="80"
                 width="80"
@@ -58,7 +58,7 @@
                   class="d-flex flex-column justify-center text-sm-center px-md-2"
                 >
                   <div class="card-text">
-                    {{ item.p_id.name }} / {{ item.p_id.price }} 元
+                    {{ item.p_id.name ?? '未知商品' }} / {{ item.p_id.price ?? 0 }} 元
                   </div>
                 </v-col>
                 <v-col
@@ -241,7 +241,6 @@
 
 <script setup>
 import { definePage } from 'vue-router/auto'
-import { useApi } from '@/composables/axios'
 import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 import { useSnackbar } from 'vuetify-use-dialog'
@@ -256,36 +255,23 @@ definePage({
   }
 })
 
-const { apiAuth } = useApi()
 const router = useRouter()
 const user = useUserStore()
 const createSnackbar = useSnackbar()
 
-const items = ref([]) // 購物車中的商品
+const items = computed(() => user.cart)
 const loading = ref(false) // 標示是否正在載入或處理請求
 const note = ref('') // 訂單備註
 const confirmDialog = ref({ open: false })
 
-const loadItems = async () => {
+const loadItems = () => {
   try {
-    const { data } = await apiAuth.get('/user/cart')
-    // 過濾掉 p_id 不存在或 p_id.sell 為 false 的商品
-    const validItems = data.result.filter(item => item.p_id && item.p_id.sell)
-    // 刪除無效商品
-    const invalidItems = data.result.filter(item => !item.p_id || !item.p_id.sell)
-    for (const item of invalidItems) {
-      await deleteItem(item, false) // false 表示不彈出確認對話框
-    }
-    // 將最新加入的商品排在最上面
-    items.value = validItems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    user.cart = validItems // 更新 user.cart 確保 cartQuantity 正確
+    loading.value = true
+    user.loadCart()
   } catch (error) {
-    createSnackbar({
-      text: error?.response?.data?.message || '發生錯誤',
-      snackbarProps: {
-        color: 'red-lighten-1'
-      }
-    })
+    handleError(error)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -313,15 +299,11 @@ const changeQuantity = async (item, newQuantity) => {
       open: true,
       title: '您確認要移除嗎？',
       message: '',
-      action: async () => {
-        await updateQuantity(item, 0)
-        items.value = items.value.filter(i => i._id !== item._id)
-      }
+      action: () => updateQuantity(item, 0)
     }
     return
   }
 
-  item.quantity = newQuantity
   await updateQuantity(item, newQuantity)
 }
 
@@ -333,7 +315,6 @@ const deleteItem = async (item, showConfirmation = true) => {
 
   const performDelete = async () => {
     await updateQuantity(item, 0)
-    items.value = items.value.filter(i => i._id !== item._id)
   }
 
   if (showConfirmation) {
@@ -369,27 +350,21 @@ const updateQuantity = async (item, newQuantity = null) => {
   try {
     loading.value = true
     const quantity = newQuantity !== null ? newQuantity : item.quantity
-    const result = await user.addCart(item.p_id._id, quantity, item.colors, item.sizes)
-    if (result.color === 'green') {
-      if (quantity === 0) {
-        items.value = items.value.filter(i => i._id !== item._id) // 移除商品
-      } else {
-        const index = items.value.findIndex(i => i._id === item._id)
-        if (index !== -1) {
-          items.value[index] = { ...items.value[index], quantity }
-        }
-      }
-      user.cart = [...items.value] // 使用展開運算符創建新數組
-    }
-    loading.value = false
+    await user.addCart(item.p_id._id, quantity, item.colors, item.sizes)
+    await user.loadCart() // 重新加載購物車數據以確保同步
   } catch (error) {
+    handleError(error)
+  } finally {
     loading.value = false
-    console.error(error)
-    createSnackbar({
-      text: error?.response?.data?.message || '發生錯誤',
-      snackbarProps: { color: 'red-lighten-1' }
-    })
   }
+}
+
+const handleError = (error) => {
+  console.error(error)
+  createSnackbar({
+    text: error?.response?.data?.message || '發生錯誤，請稍後再試',
+    snackbarProps: { color: 'red-lighten-1' }
+  })
 }
 
 const totalPrice = computed(() => {
@@ -409,9 +384,10 @@ const checkout = async () => {
   })
 
   if (result.color === 'teal-darken-1') {
+    await user.loadCart() // 確保購物車數據更新
     router.push('/member/order')
-    loading.value = false
   }
+  loading.value = false
 }
 
 loadItems()

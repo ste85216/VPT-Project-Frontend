@@ -112,10 +112,11 @@ export const useUserStore = defineStore('user', () => {
   const addCart = async (product, quantity, colors, sizes) => {
     try {
       const { data } = await apiAuth.patch('/user/cart', { p_id: product, quantity, colors, sizes })
-      cart.value = data.result || []
+      updateCart(data.result || [])
       return {
         color: 'teal-darken-1',
-        text: '成功'
+        text: '成功',
+        cart: data.result // 返回更新後的購物車數據
       }
     } catch (error) {
       return {
@@ -125,6 +126,9 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const updateCart = (newCart) => {
+    cart.value = newCart.filter(item => item && item.p_id) // 確保只保留有效的商品
+  }
   const checkout = async (note) => {
     try {
       await apiAuth.post('/order', { note })
