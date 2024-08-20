@@ -19,7 +19,7 @@
             density="compact"
           >
             <div
-              :style="backgroundStyle"
+              :style="memberBackgroundStyle"
             >
               <v-list-item class="px-6 pa-4">
                 <v-row
@@ -87,7 +87,7 @@
             class="pa-0"
             density="compact"
           >
-            <div style="background: url(/src/assets/drawer_bg_admin.webp); background-size:380px 250px; background-position: bottom left">
+            <div :style="adminBackgroundStyle">
               <v-list-item class="px-6 pa-4">
                 <v-row
                   no-gutters
@@ -109,8 +109,7 @@
           >
             <div
               class="text-white d-flex align-center justify-center"
-              style="font-size: 16px; line-height: 32px; font-weight: 600; letter-spacing: 2px; height: 120px;
-              background: url(/src/assets/men.jpg);background-size: cover; text-shadow: 0 0 10px rgba(0,0,0,1);"
+              :style="noLoginBackgroundStyle"
             >
               今天是個適合加入<br>VPT的好日子呢!
             </div>
@@ -391,11 +390,30 @@ import { useRoute } from 'vue-router'
 import CartIcon from '@/components/CartIcon.vue'
 import { storeToRefs } from 'pinia'
 import memberDrawerImg from '../assets/drawer_bg2.webp'
+import adminDrawerImg from '../assets/drawer_bg_admin.webp'
+import noLoginDrawerImg from '../assets/men.jpg'
 
-const backgroundStyle = computed(() => ({
+const memberBackgroundStyle = computed(() => ({
   backgroundImage: `url(${memberDrawerImg})`,
   backgroundSize: '380px 250px',
   backgroundPosition: 'bottom left'// 設定背景圖片全螢幕
+}))
+
+const adminBackgroundStyle = computed(() => ({
+  backgroundImage: `url(${adminDrawerImg})`,
+  backgroundSize: '380px 250px',
+  backgroundPosition: 'bottom left'// 設定背景圖片全螢幕
+}))
+
+const noLoginBackgroundStyle = computed(() => ({
+  fontSize: '16px',
+  lineHeight: '32px',
+  fontWeight: '600',
+  letterSpacing: '2px',
+  textShadow: '0 0 10px rgba(0,0,0,1)',
+  height: '120px',
+  backgroundImage: `url(${noLoginDrawerImg})`,
+  backgroundSize: 'cover'
 }))
 
 const { mdAndUp } = useDisplay()
