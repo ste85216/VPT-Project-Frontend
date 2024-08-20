@@ -313,12 +313,15 @@ const changeQuantity = async (item, newQuantity) => {
       open: true,
       title: '您確認要移除嗎？',
       message: '',
-      action: () => updateQuantity(item, 0)
+      action: async () => {
+        await updateQuantity(item, 0)
+        items.value = items.value.filter(i => i._id !== item._id)
+      }
     }
     return
   }
 
-  item.quantity = newQuantity // 先更新本地數量
+  item.quantity = newQuantity
   await updateQuantity(item, newQuantity)
 }
 
@@ -328,15 +331,20 @@ const deleteItem = async (item, showConfirmation = true) => {
     return
   }
 
+  const performDelete = async () => {
+    await updateQuantity(item, 0)
+    items.value = items.value.filter(i => i._id !== item._id)
+  }
+
   if (showConfirmation) {
     confirmDialog.value = {
       open: true,
       title: '您確認要移除嗎？',
       message: '',
-      action: () => updateQuantity(item, 0)
+      action: performDelete
     }
   } else {
-    await updateQuantity(item, 0)
+    await performDelete()
   }
 }
 
@@ -366,21 +374,17 @@ const updateQuantity = async (item, newQuantity = null) => {
       if (quantity === 0) {
         items.value = items.value.filter(i => i._id !== item._id) // 移除商品
       } else {
-        item.quantity = quantity // 更新商品數量
-      }
-      user.cart = items.value.slice() // 直接更新引用來觸發更新
-    } else {
-      createSnackbar({
-        text: result.text,
-        snackbarProps: {
-          color: result.color
+        const index = items.value.findIndex(i => i._id === item._id)
+        if (index !== -1) {
+          items.value[index] = { ...items.value[index], quantity }
         }
-      })
+      }
+      user.cart = [...items.value] // 使用展開運算符創建新數組
     }
     loading.value = false
   } catch (error) {
     loading.value = false
-    console.log(error)
+    console.error(error)
     createSnackbar({
       text: error?.response?.data?.message || '發生錯誤',
       snackbarProps: { color: 'red-lighten-1' }
