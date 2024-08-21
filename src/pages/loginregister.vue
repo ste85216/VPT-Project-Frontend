@@ -141,19 +141,6 @@
                 maxlength="20"
                 clearable
               />
-              <!-- 暱稱輸入欄位 -->
-              <v-text-field
-                v-model="nickname.value.value"
-                :error-messages="nickname.errorMessage.value"
-                class="mt-2"
-                label="暱稱"
-                type="text"
-                variant="outlined"
-                density="compact"
-                min-length="4"
-                maxlength="20"
-                clearable
-              />
               <!-- Email輸入欄位 -->
               <v-text-field
                 v-model="email.value.value"
@@ -393,19 +380,6 @@
                   maxlength="20"
                   clearable
                 />
-                <!-- 暱稱輸入欄位 -->
-                <v-text-field
-                  v-model="nickname.value.value"
-                  :error-messages="nickname.errorMessage.value"
-                  class="mt-2"
-                  label="暱稱"
-                  type="text"
-                  variant="outlined"
-                  density="compact"
-                  min-length="4"
-                  maxlength="20"
-                  clearable
-                />
                 <!-- Email輸入欄位 -->
                 <v-text-field
                   v-model="email.value.value"
@@ -626,8 +600,6 @@ const registerSchema = yup.object({
   name: yup
     .string()
     .required('請輸入姓名'),
-  nickname: yup
-    .string(),
   email: yup
     .string()
     .required('請輸入信箱')
@@ -668,7 +640,6 @@ const Raccount = useField('Raccount')
 const Rpassword = useField('Rpassword')
 const passwordConfirm = useField('passwordConfirm')
 const name = useField('name')
-const nickname = useField('nickname')
 const email = useField('email')
 const phone = useField('phone')
 const birthday = useField('birthday')
@@ -696,7 +667,6 @@ const registerSubmit = handleRegisterSubmit(async (values) => {
       account: values.Raccount,
       password: values.Rpassword,
       name: values.name,
-      nickname: values.nickname,
       email: values.email,
       phone: values.phone,
       birthday: values.birthday
