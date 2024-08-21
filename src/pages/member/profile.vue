@@ -547,6 +547,7 @@ const submitProfile = handleSubmit(saveProfile)
     min-height: 28px !important;
     padding: 0 4px !important;
     font-size: 14px;
+    text-align: center;
     }
     .avatar {
     border: 1px solid #039199;
