@@ -23,7 +23,6 @@
     <v-col cols="12">
       <v-sheet
         v-if="orders.length === 0"
-        height="100%"
         align="center"
         class="opacity-80"
       >

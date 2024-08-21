@@ -196,7 +196,6 @@
       </v-row>
       <v-sheet
         v-if="sessions.length === 0"
-        height="100%"
         align="center"
         class="opacity-80"
       >

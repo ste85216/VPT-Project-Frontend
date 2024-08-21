@@ -58,15 +58,14 @@
             </v-col>
           </v-row>
         </v-col>
+        <v-sheet
+          v-if="enrollments.length === 0"
+          align="center"
+          class="opacity-80"
+        >
+          目前您沒有報名任何場次
+        </v-sheet>
       </v-row>
-      <v-sheet
-        v-if="enrollments.length === 0"
-        height="100%"
-        align="center"
-        class="opacity-80"
-      >
-        目前您沒有報名任何場次
-      </v-sheet>
 
       <!-- 場次卡片列表 -->
       <v-card
@@ -152,7 +151,6 @@
       </v-row>
       <v-sheet
         v-if="enrollments.length === 0"
-        height="100%"
         align="center"
         class="opacity-80"
       >
