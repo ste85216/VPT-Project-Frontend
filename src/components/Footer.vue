@@ -375,72 +375,54 @@
             </v-col>
             <v-col
               cols="12"
+              class="ps-16"
             >
-              <v-row no-gutters>
-                <v-col cols="2" />
-                <v-col
-                  cols="2"
-                  class="me-1 ms-1"
-                >
-                  <v-btn
-                    variant="plain"
-                    :ripple="false"
-                    class="opacity-100"
-                    :active="false"
+              <v-row
+                no-gutters
+              >
+                <v-col class="me-1">
+                  <router-link
+                    to="#"
+                    class="icon-link-lg"
                   >
                     <v-icon
                       icon="mdi-instagram"
                       size="x-large"
                     />
-                  </v-btn>
+                  </router-link>
                 </v-col>
-                <v-col
-                  cols="2"
-                  class="me-1"
-                >
-                  <v-btn
-                    variant="plain"
-                    :ripple="false"
-                    class="opacity-100"
-                    :active="false"
+                <v-col class="me-1">
+                  <router-link
+                    to="#"
+                    class="icon-link-lg"
                   >
                     <v-icon
                       icon="mdi-facebook"
                       size="x-large"
                     />
-                  </v-btn>
+                  </router-link>
                 </v-col>
-                <v-col
-                  cols="2"
-                  class="me-1"
-                >
-                  <v-btn
-                    variant="plain"
-                    :ripple="false"
-                    class="opacity-100"
-                    :active="false"
+                <v-col class="me-1">
+                  <router-link
+                    to="#"
+                    class="icon-link-lg"
                   >
                     <v-icon
                       icon="mdi-twitter"
                       size="x-large"
                     />
-                  </v-btn>
+                  </router-link>
                 </v-col>
-                <v-col
-                  cols="2"
-                  class="me-1"
-                >
-                  <v-btn
-                    variant="plain"
-                    :ripple="false"
-                    class="opacity-100"
-                    :active="false"
+                <v-col>
+                  <router-link
+                    to="#"
+                    class="icon-link-lg"
                   >
                     <v-icon
                       icon="mdi-youtube"
                       size="x-large"
                     />
-                  </v-btn>
+                  </router-link>
                 </v-col>
               </v-row>
             </v-col>
@@ -491,6 +473,14 @@ const { lgAndUp } = useDisplay()
 .icon-link {
   color: #fff;
   font-size: 1rem;
+  &:hover {
+    color: #64FFDA;
+  }
+}
+
+.icon-link-lg {
+  color: #fff;
+  font-size: 0.8rem;
   &:hover {
     color: #64FFDA;
   }
