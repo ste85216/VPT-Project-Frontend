@@ -19,7 +19,7 @@
               cover
               class="flex-grow-1"
             >
-              <v-expand-transition>
+              <v-expand-transition v-if="smAndUp">
                 <div
                   v-if="isHovering"
                   class="d-flex bg-teal-darken-1 v-card--reveal"
@@ -50,6 +50,9 @@
 </template>
 
 <script setup>
+import { useDisplay } from 'vuetify'
+
+const { smAndUp } = useDisplay()
 const props = defineProps(['_id', 'category', 'description', 'images', 'name', 'price', 'sell'])
 </script>
 
