@@ -144,7 +144,7 @@
             data-aos-delay="450"
             data-aos-duration="1200"
             data-aos-easing="ease-in"
-            data-aos-offset="100"
+            data-aos-offset="250"
           >
             一同翱翔
           </h1>
@@ -152,7 +152,7 @@
             data-aos="fade-up"
             data-aos-delay="450"
             data-aos-duration="1200"
-            data-aos-offset="100"
+            data-aos-offset="250"
             class="mb-12 mt-sm-8 pe-sm-8"
           >
             無論是臨時想要找場地，還是想找志同道合的隊友一起打場酣暢淋漓的比賽，使用VPT的刊登報名系統是你最佳的選擇! 我們不僅能幫想打球的人快速連結到合適場地，也能讓臨時缺人的場主刊登場次、及時補齊人數。來吧，一同翱翔在球場上吧!
@@ -167,7 +167,7 @@
             data-aos-delay="400"
             data-aos-duration="1200"
             data-aos-easing="ease-in"
-            data-aos-offset="100"
+            data-aos-offset="250"
             src="/src/assets/男排嘶吼.jpg"
             cover
           />
@@ -445,7 +445,7 @@ function LottieScrollTrigger (vars) {
 
   .gradient {
     width: 100vw;
-    height: 105vh;
+    height: 85vh;
     position: relative;
     background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     z-index: 1;
