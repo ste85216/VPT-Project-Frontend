@@ -449,6 +449,7 @@ function LottieScrollTrigger (vars) {
     position: relative;
     background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     z-index: 1;
+    transform: translateY(1%)
   }
 
   .website-content {
