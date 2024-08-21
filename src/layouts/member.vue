@@ -1,7 +1,7 @@
 <template>
   <v-container
-    class="mt-8 mt-sm-16"
-    style="max-width: 1220px;height: 75%;"
+    class="mt-8 mt-sm-16 mb-sm-8"
+    style="max-width: 1220px; min-height: 80%;"
   >
     <div class="d-flex justify-space-between ">
       <v-col

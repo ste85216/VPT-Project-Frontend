@@ -208,7 +208,7 @@
                     <v-col>
                       <!-- 無搜尋結果時顯示 -->
                       <v-sheet
-                        v-if="filteredSessions.length === 0"
+                        v-if="sessions.length === 0"
                         class="text-center pb-10"
                       >
                         未搜尋到相關場次
@@ -216,7 +216,7 @@
                       <!-- 場次列表 -->
                       <v-expansion-panels class="d-none d-md-block">
                         <v-expansion-panel
-                          v-for="(session, index) in filteredSessions"
+                          v-for="(session, index) in sessions"
                           :key="session._id"
                           elevation="0"
                           :style="{ backgroundColor: index % 2 === 0 ? '#f0f0f080' : '#ECEFF1' }"
@@ -416,7 +416,7 @@
                       <!-- md以下一些資訊丟報名dialog -->
                       <v-expansion-panels class="d-md-none">
                         <v-expansion-panel
-                          v-for="(session, index) in filteredSessions"
+                          v-for="(session, index) in sessions"
                           :key="session._id"
                           elevation="0"
                           :style="{ backgroundColor: index % 2 === 0 ? '#f0f0f080' : '#ECEFF1' }"
@@ -561,6 +561,20 @@
                       </v-expansion-panels>
                     </v-col>
                   </v-row>
+                  <v-col>
+                    <v-pagination
+                      v-if="pages > 1"
+                      v-model="page"
+                      :length="pages"
+                      rounded="circle"
+                      density="compact"
+                      next-icon="mdi-menu-right"
+                      prev-icon="mdi-menu-left"
+                      :total-visible="8"
+                      color="teal-darken-1"
+                      @update:model-value="loadSessions"
+                    />
+                  </v-col>
                 </v-card>
               </v-col>
             </v-row>
@@ -656,8 +670,7 @@
 </template>
 
 <script setup>
-// 導入所需的模組和函數
-import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useApi } from '@/composables/axios'
 import { useRouter } from 'vue-router'
 import { useSnackbar } from 'vuetify-use-dialog'
@@ -690,10 +703,11 @@ const filters = ref({
   netheight: [],
   level: []
 })
+const page = ref(1)
+const pages = ref(1)
+const ITEMS_PER_PAGE = 10
 
 // 過濾狀態和結果
-const isFiltered = ref(false)
-const tempFilteredSessions = ref([])
 
 // 報名對話框狀態
 const enrollDialog = ref({
@@ -704,6 +718,121 @@ const enrollDialog = ref({
   nopreference: 0
 })
 
+// 場次相關函數
+// 加載場次資料
+const loadSessions = async () => {
+  try {
+    const params = new URLSearchParams()
+    params.append('itemsPerPage', ITEMS_PER_PAGE)
+    params.append('page', page.value)
+    if (filters.value.date) params.append('date', filters.value.date)
+    if (filters.value.city) params.append('city', filters.value.city)
+    if (filters.value.venueId) params.append('venueId', filters.value.venueId)
+    filters.value.netheight.forEach(height => params.append('netheight', height))
+    filters.value.level.forEach(level => params.append('level', level))
+
+    const { data } = await api.get('/session', { params })
+
+    if (data.success) {
+      sessions.value = data.result.data
+      pages.value = data.result.totalPages
+    } else {
+      createSnackbar({
+        text: '接收到的資料格式不正確',
+        snackbarProps: { color: 'red-lighten-1' }
+      })
+    }
+  } catch (error) {
+    createSnackbar({
+      text: error?.response?.data?.message || '無法加載場次資料',
+      snackbarProps: { color: 'red-lighten-1' }
+    })
+  }
+}
+
+// 檢查場次是否已滿
+const isSessionFull = (session) => {
+  const remainingMale = session.male - (session.participantMale || 0)
+  const remainingFemale = session.female - (session.participantFemale || 0)
+  const remainingNoPreference = session.nopreference - (session.participantNoPreference || 0)
+  return remainingMale <= 0 && remainingFemale <= 0 && remainingNoPreference <= 0
+}
+
+// 球場相關函數
+// 加載球場資料
+const loadVenue = async () => {
+  try {
+    let allVenues = []
+    let page = 1
+    let hasMoreData = true
+
+    while (hasMoreData) {
+      const { data } = await api.get('/venue', {
+        params: {
+          page,
+          itemsPerPage: 100 // 每次請求100條記錄
+        }
+      })
+
+      if (Array.isArray(data.result.data) && data.result.data.length > 0) {
+        allVenues = allVenues.concat(data.result.data)
+        page++
+      } else {
+        hasMoreData = false
+      }
+
+      // 如果獲取的數據量等於或超過總數，就停止請求
+      if (data.result.total && allVenues.length >= data.result.total) {
+        hasMoreData = false
+      }
+    }
+
+    const venuesData = allVenues.map(venue => ({
+      id: venue._id.$oid || venue._id,
+      name: venue.name,
+      city: extractCity(venue.address)
+    }))
+
+    venues.value = venuesData.reduce((acc, venue) => {
+      acc[venue.id] = venue
+      return acc
+    }, {})
+
+    venueOptions.value = venuesData
+  } catch (error) {
+    console.error('Error loading venues:', error)
+    createSnackbar({
+      text: error?.response?.data?.message || '無法加載球場資料',
+      snackbarProps: { color: 'red-lighten-1' }
+    })
+  }
+}
+
+// 從地址中提取城市
+const extractCity = (address) => {
+  const addressWithoutPostalCode = address.replace(/^\d{3,5}\s*/, '')
+  const cityCountyMatch = addressWithoutPostalCode.match(/^(.+?[市縣])/)
+  return cityCountyMatch ? cityCountyMatch[1] : '未知地區'
+}
+
+// 獲取場地名稱
+const getVenueName = (v_id) => {
+  const id = v_id._id || v_id
+  return venues.value[id]?.name || '未知場地'
+}
+
+// 獲取場地城市
+const getVenueCity = (v_id) => {
+  const id = v_id._id || v_id
+  return venues.value[id]?.city || '未知地區'
+}
+
+// 場地變更時的處理函數
+const onVenueChange = () => {
+  loadSessions()
+}
+
+// 報名相關函數
 // 打開報名對話框
 const openEnrollDialog = (session) => {
   if (isSessionFull(session)) {
@@ -798,11 +927,12 @@ const submitEnrollment = async () => {
         text: '您已報名過該場次，點擊此處查看"報名紀錄"',
         snackbarProps: {
           color: 'orange-darken-3',
-          timeout: 3000,
+          timeout: 2000,
           closeOnClick: false,
           onClick: () => {
             router.push('/member/enrollment')
-          }
+          },
+          style: { cursor: 'pointer' }
         }
       })
       closeEnrollDialog()
@@ -850,103 +980,7 @@ const closeEnrollDialog = () => {
   enrollDialog.value.open = false
 }
 
-// 加載場次資料
-const loadSessions = async () => {
-  try {
-    const params = {}
-    if (filters.value.date) {
-      params.date = filters.value.date
-    }
-
-    const { data } = await api.get('/session', { params })
-
-    if (Array.isArray(data.result)) {
-      // 對場次進行排序，日期最近的排在前面
-      sessions.value = data.result.sort((a, b) => new Date(a.date) - new Date(b.date))
-      const uniqueVenueIds = [...new Set(sessions.value.map(s => s.v_id.$oid))]
-      await Promise.all(uniqueVenueIds.map(loadVenue))
-    } else {
-      createSnackbar({
-        text: '接收到的資料格式不正確',
-        snackbarProps: { color: 'red-lighten-1' }
-      })
-    }
-  } catch (error) {
-    createSnackbar({
-      text: error?.response?.data?.message || '無法加載場次資料',
-      snackbarProps: { color: 'red-lighten-1' }
-    })
-  }
-}
-
-// 加載球場資料
-const loadVenue = async () => {
-  try {
-    let allVenues = []
-    let page = 1
-    let hasMoreData = true
-
-    while (hasMoreData) {
-      const { data } = await api.get('/venue', {
-        params: {
-          page,
-          itemsPerPage: 100 // 每次請求100條記錄
-        }
-      })
-
-      if (Array.isArray(data.result.data) && data.result.data.length > 0) {
-        allVenues = allVenues.concat(data.result.data)
-        page++
-      } else {
-        hasMoreData = false
-      }
-
-      // 如果獲取的數據量等於或超過總數，就停止請求
-      if (data.result.total && allVenues.length >= data.result.total) {
-        hasMoreData = false
-      }
-    }
-
-    const venuesData = allVenues.map(venue => ({
-      id: venue._id.$oid || venue._id,
-      name: venue.name,
-      city: extractCity(venue.address)
-    }))
-
-    venues.value = venuesData.reduce((acc, venue) => {
-      acc[venue.id] = venue
-      return acc
-    }, {})
-
-    venueOptions.value = venuesData
-  } catch (error) {
-    console.error('Error loading venues:', error)
-    createSnackbar({
-      text: error?.response?.data?.message || '無法加載球場資料',
-      snackbarProps: { color: 'red-lighten-1' }
-    })
-  }
-}
-
-// 從地址中提取城市
-const extractCity = (address) => {
-  const addressWithoutPostalCode = address.replace(/^\d{3,5}\s*/, '')
-  const cityCountyMatch = addressWithoutPostalCode.match(/^(.+?[市縣])/)
-  return cityCountyMatch ? cityCountyMatch[1] : '未知地區'
-}
-
-// 獲取場地名稱
-const getVenueName = (v_id) => {
-  const id = v_id._id || v_id
-  return venues.value[id]?.name || '未知場地'
-}
-
-// 獲取場地城市
-const getVenueCity = (v_id) => {
-  const id = v_id._id || v_id
-  return venues.value[id]?.city || '未知地區'
-}
-
+// 輔助函數
 // 格式化日期
 const formatDate = (dateString) => {
   const date = new Date(dateString)
@@ -972,58 +1006,30 @@ const formatRemainingPlayers = (session) => {
   }
 }
 
+// 過濾相關函數
 // 應用過濾器
 const applyFilters = async () => {
-  isFiltered.value = true
+  page.value = 1 // 重置頁碼
+
+  // 在這裡加入 console.log 來檢查過濾器和發送的參數
+  console.log('Filters:', filters.value)
+
+  const params = new URLSearchParams()
+  params.append('itemsPerPage', ITEMS_PER_PAGE)
+  params.append('page', page.value)
+  if (filters.value.date) params.append('date', filters.value.date)
+  if (filters.value.city) params.append('city', filters.value.city)
+  if (filters.value.venueId) params.append('venueId', filters.value.venueId)
+  filters.value.netheight.forEach(height => params.append('netheight', height))
+  filters.value.level.forEach(level => params.append('level', level))
+
+  console.log('API Params:', params.toString())
+
   await loadSessions()
-
-  tempFilteredSessions.value = sessions.value
-    .filter(session => {
-      let isMatch = true
-
-      // 城市過濾
-      if (filters.value.city && getVenueCity(session.v_id) !== filters.value.city) {
-        isMatch = false
-      }
-
-      // 場地過濾
-      if (isMatch && filters.value.venueId) {
-        const sessionVenueId = session.v_id._id || session.v_id
-        if (sessionVenueId !== filters.value.venueId) {
-          isMatch = false
-        }
-      }
-
-      // 日期過濾
-      if (isMatch && filters.value.date) {
-        const sessionDate = new Date(session.date).toISOString().split('T')[0]
-        if (sessionDate !== filters.value.date) {
-          isMatch = false
-        }
-      }
-
-      // 網高過濾
-      if (isMatch && filters.value.netheight.length) {
-        if (!filters.value.netheight.includes(session.netheight)) {
-          isMatch = false
-        }
-      }
-
-      // 等級過濾
-      if (isMatch && filters.value.level && filters.value.level.length) {
-        const levelMatch = filters.value.level.some(level => level === session.level)
-        if (!levelMatch) {
-          isMatch = false
-        }
-      }
-
-      return isMatch
-    })
-    .sort((a, b) => new Date(a.date) - new Date(b.date)) // 確保過濾後的結果也按日期排序
 }
 
 // 清除過濾條件
-const clearFilters = async () => {
+const clearFilters = () => {
   filters.value = {
     city: '',
     venueId: '',
@@ -1031,30 +1037,11 @@ const clearFilters = async () => {
     netheight: [],
     level: []
   }
-  isFiltered.value = false
-  await loadSessions()
-  tempFilteredSessions.value = []
+  page.value = 1 // 重置頁碼
+  loadSessions()
 }
 
-// 計算過濾後的場次
-const filteredSessions = computed(() => {
-  const sessionsToDisplay = isFiltered.value ? tempFilteredSessions.value : sessions.value
-  return sessionsToDisplay.sort((a, b) => new Date(a.date) - new Date(b.date))
-})
-
-// 場地變更時的處理函數
-const onVenueChange = (value) => {
-  applyFilters()
-}
-
-// 檢查場次是否已滿
-const isSessionFull = (session) => {
-  const remainingMale = session.male - (session.participantMale || 0)
-  const remainingFemale = session.female - (session.participantFemale || 0)
-  const remainingNoPreference = session.nopreference - (session.participantNoPreference || 0)
-  return remainingMale <= 0 && remainingFemale <= 0 && remainingNoPreference <= 0
-}
-
+// 生命週期鉤子
 // 組件卸載前的處理
 onBeforeUnmount(() => {
   if (router.currentRoute.value.path === '/member/enrollment') {
@@ -1064,16 +1051,11 @@ onBeforeUnmount(() => {
 
 // 組件掛載時的處理
 onMounted(async () => {
-  if (needsRefresh.value) {
-    await loadSessions()
-    needsRefresh.value = false
-  } else {
-    loadSessions()
-    loadVenue()
-  }
+  await loadSessions()
+  await loadVenue()
 })
 
-// 定義頁面元數據
+// 定義頁面名稱及是否需要登錄
 definePage({
   meta: {
     title: '場次報名 | VPT',

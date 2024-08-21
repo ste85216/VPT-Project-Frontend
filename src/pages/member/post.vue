@@ -110,9 +110,15 @@
                 {{ session.level }}
               </v-col>
               <v-col>
-                男:{{ session.male }} (已報名:{{ session.participantMale }}) <br>
-                女:{{ session.female }} (已報名:{{ session.participantFemale }}) <br>
-                不限:{{ session.nopreference }} (已報名:{{ session.participantNoPreference }})
+                <template v-if="session.male > 0">
+                  男:{{ session.male }} (已報名:{{ session.participantMale }}) <br>
+                </template>
+                <template v-if="session.female > 0">
+                  女:{{ session.female }} (已報名:{{ session.participantFemale }}) <br>
+                </template>
+                <template v-if="session.nopreference > 0">
+                  不限:{{ session.nopreference }} (已報名:{{ session.participantNoPreference }})
+                </template>
               </v-col>
               <v-col cols="1">
                 {{ session.fee }}/人
@@ -404,28 +410,31 @@
             density="compact"
             type="date"
             required
+            :min="today"
           />
           <v-row>
             <v-col cols="6">
               <v-text-field
                 v-model="startTime.value.value"
                 :error-messages="startTime.errorMessage.value"
-                type="time"
                 label="開始時間"
                 variant="outlined"
                 density="compact"
-                required
+                readonly
+                clearable
+                @click="openTimePicker('start')"
               />
             </v-col>
             <v-col cols="6">
               <v-text-field
                 v-model="endTime.value.value"
                 :error-messages="endTime.errorMessage.value"
-                type="time"
                 label="結束時間"
                 variant="outlined"
                 density="compact"
-                required
+                readonly
+                clearable
+                @click="openTimePicker('end')"
               />
             </v-col>
           </v-row>
@@ -620,10 +629,39 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <!-- 時間選擇器對話框 -->
+  <v-dialog
+    v-model="timePickerDialog.open"
+    width="380"
+  >
+    <v-card>
+      <v-card-text class="d-flex justify-center pa-0">
+        <v-time-picker
+          v-if="timePickerDialog.open"
+          v-model="timePickerDialog.time"
+          format="24hr"
+          color="teal-lighten-1"
+          scrollable
+        />
+      </v-card-text>
+      <v-card-actions class="pe-8 pb-6">
+        <v-spacer />
+        <v-btn
+          color="primary"
+          variant="outlined"
+          size="small"
+          @click="confirmTimePicker"
+        >
+          確定
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
@@ -644,8 +682,43 @@ const { mdAndUp, smAndUp } = useDisplay()
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
+// 添加這個計算屬性
+const today = computed(() => {
+  const today = new Date()
+  return today.toISOString().split('T')[0]
+})
+
 const sessions = ref([])
 const venues = ref([])
+
+const timePickerDialog = ref({
+  open: false,
+  time: null,
+  type: null // 'start' 或 'end'
+})
+
+const openTimePicker = (type) => {
+  timePickerDialog.value.type = type
+  timePickerDialog.value.open = true
+}
+
+const confirmTimePicker = () => {
+  if (timePickerDialog.value.type === 'start') {
+    startTime.value.value = timePickerDialog.value.time
+  } else {
+    endTime.value.value = timePickerDialog.value.time
+  }
+  timePickerDialog.value.open = false
+  timePickerDialog.value.time = null // 重置選擇的時間
+}
+
+const resetTimePicker = () => {
+  timePickerDialog.value = {
+    open: false,
+    time: null,
+    type: null
+  }
+}
 
 const schema = yup.object({
   venueId: yup.string().required('請選擇球場'),
@@ -741,6 +814,7 @@ const submit = handleSubmit(async (values) => {
 })
 
 const openDialog = (session) => {
+  resetTimePicker() // 重置時間選擇器
   if (session) {
     dialog.value.id = session._id
     const [startTime, endTime] = session.time.split('-')
@@ -775,7 +849,7 @@ const openDialog = (session) => {
         fee: 0,
         note: ''
       }
-    }) // 這裡確保表單重置為初始空值
+    })
   }
   dialog.value.open = true
 }
@@ -788,6 +862,7 @@ const formatDateForInput = (dateString) => {
 
 const closeDialog = () => {
   resetForm() // 確保表單在關閉時被重置
+  resetTimePicker() // 重置時間選擇器
   dialog.value.open = false
 }
 

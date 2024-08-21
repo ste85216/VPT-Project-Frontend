@@ -17,6 +17,7 @@ import { zhHant } from 'vuetify/locale'
 import colors from 'vuetify/util/colors'
 
 import { VDateInput } from 'vuetify/labs/VDateInput'
+import { VTimePicker } from 'vuetify/labs/VTimePicker'
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
@@ -38,6 +39,7 @@ export default createVuetify({
     messages: { zhHant }
   },
   components: {
-    VDateInput
+    VDateInput,
+    VTimePicker
   }
 })
