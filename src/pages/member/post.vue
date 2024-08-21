@@ -895,7 +895,7 @@ const loadSessions = async () => {
   try {
     const { data } = await apiAuth.get('/session/user')
     if (Array.isArray(data.result)) {
-      sessions.value = data.result.sort((a, b) => new Date(b.date) - new Date(a.date))
+      sessions.value = data.result // 移除這裡的排序
     } else {
       console.error('Received data is not an array:', data)
       createSnackbar({
