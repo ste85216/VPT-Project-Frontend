@@ -6,10 +6,17 @@
         cols="12"
         sm="6"
       >
+        <v-skeleton-loader
+          v-if="loading"
+          class="rounded-xl elevation-6 skeleton-full-height"
+          type="image"
+        />
         <v-img
+          v-else
           :src="product.images[0]"
           class="rounded-xl elevation-6 product-img"
           cover
+          @load="loading = false"
         />
       </v-col>
       <v-col
@@ -162,6 +169,7 @@ const product = ref({
 const selectedSize = ref('')
 const selectedColor = ref('')
 const quantity = ref(1)
+const loading = ref(true)
 
 const load = async () => {
   try {
@@ -180,6 +188,7 @@ const load = async () => {
 
     // 發送商品分類信息到父組件
     emit('update:category', product.value.category)
+    loading.value = false
   } catch (error) {
     console.log(error)
     createSnackbar({
@@ -188,6 +197,7 @@ const load = async () => {
         color: 'red-lighten-1'
       }
     })
+    loading.value = false
   }
 }
 
@@ -255,8 +265,6 @@ const addToCart = async () => {
   }
 }
 
-load()
-
 // 監聽購物車變化，確保 V-Badge 更新
 watch(() => user.cart, (newCart) => {
   user.cart = newCart
@@ -274,6 +282,20 @@ watch(() => user.cart, (newCart) => {
 .product-img {
   width: 100%;
   height: 100%;
+}
+
+.skeleton-full-height {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  object-fit: cover;
+  :deep(.v-skeleton-loader__bone) {
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 24px;
+  object-fit: cover;
+  }
+
 }
 
 h3 {

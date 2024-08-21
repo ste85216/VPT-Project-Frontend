@@ -80,8 +80,8 @@
         >
           <v-img
             data-aos="fade-left"
-            data-aos-delay="500"
-            data-aos-duration="2000"
+            data-aos-delay="400"
+            data-aos-duration="1200"
             data-aos-easing="ease-in"
             src="/src/assets/排球企聯01.jpg"
             cover
@@ -99,18 +99,18 @@
         >
           <h1
             data-aos="fade-left"
-            data-aos-delay="500"
-            data-aos-duration="1500"
+            data-aos-delay="400"
+            data-aos-duration="1200"
             data-aos-easing="ease-in"
-            data-aos-offset="500"
+            data-aos-offset="100"
           >
             飛得更高
           </h1>
           <p
             data-aos="fade-up"
-            data-aos-delay="550"
-            data-aos-duration="1500"
-            data-aos-offset="500"
+            data-aos-delay="450"
+            data-aos-duration="1200"
+            data-aos-offset="100"
             class="mb-12 mt-sm-8"
           >
             在首頁最上方的兩行標語之一，代表著穿著裝備的重要性。我們在經過無數次拜訪各家工廠後，與優良廠商合作。VPT的每一件產品也都經歷了嚴苛的測試與無數次的改進，為的就是讓你能夠在球場上發揮出最佳水平，甚至更好!
@@ -122,10 +122,10 @@
         >
           <v-img
             data-aos="fade-right"
-            data-aos-delay="700"
-            data-aos-duration="1500"
+            data-aos-delay="400"
+            data-aos-duration="1200"
             data-aos-easing="ease-in"
-            data-aos-offset="500"
+            data-aos-offset="100"
             src="/src/assets/工廠.jpg"
             cover
           />
@@ -141,18 +141,18 @@
         >
           <h1
             data-aos="fade-right"
-            data-aos-delay="750"
-            data-aos-duration="1500"
+            data-aos-delay="450"
+            data-aos-duration="1200"
             data-aos-easing="ease-in"
-            data-aos-offset="500"
+            data-aos-offset="100"
           >
             一同翱翔
           </h1>
           <p
             data-aos="fade-up"
-            data-aos-delay="550"
-            data-aos-duration="1500"
-            data-aos-offset="500"
+            data-aos-delay="450"
+            data-aos-duration="1200"
+            data-aos-offset="100"
             class="mb-12 mt-sm-8 pe-sm-8"
           >
             無論是臨時想要找場地，還是想找志同道合的隊友一起打場酣暢淋漓的比賽，使用VPT的刊登報名系統是你最佳的選擇! 我們不僅能幫想打球的人快速連結到合適場地，也能讓臨時缺人的場主刊登場次、及時補齊人數。來吧，一同翱翔在球場上吧!
@@ -164,10 +164,10 @@
         >
           <v-img
             data-aos="fade-left"
-            data-aos-delay="500"
-            data-aos-duration="2000"
+            data-aos-delay="400"
+            data-aos-duration="1200"
             data-aos-easing="ease-in"
-            data-aos-offset="500"
+            data-aos-offset="100"
             src="/src/assets/男排嘶吼.jpg"
             cover
           />
@@ -445,7 +445,7 @@ function LottieScrollTrigger (vars) {
 
   .gradient {
     width: 100vw;
-    height: 200vh;
+    height: 105vh;
     position: relative;
     background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     z-index: 1;
