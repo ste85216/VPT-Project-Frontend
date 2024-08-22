@@ -56,7 +56,8 @@
                     cols="7"
                   >
                     <h4 class="drawer-name enhanced-text">
-                      {{ user.name }}
+                      <span v-if="!user.nickname">{{ user.name }}</span>
+                      <span v-if="user.nickname">{{ user.nickname }}</span>
                     </h4>
                   </v-col>
                 </v-row>
