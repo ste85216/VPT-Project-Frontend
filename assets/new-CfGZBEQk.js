@@ -1,1 +1,0 @@
-import{b as e}from"./route-block-B_A1xBdJ.js";import{b as o,o as t}from"./index-DHoedaP3.js";const n={__name:"new",setup(r){return(c,a)=>(t(),o("h2",null,"新品上市"))}};typeof e=="function"&&e(n);export{n as default};
