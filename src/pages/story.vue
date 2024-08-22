@@ -261,8 +261,8 @@ onMounted(() => {
         trigger: '.top-title-2', // 使用 top-container 作為觸發元素
         start: 'center 35%', // 當 top-container 的中心到達視窗中心時開始
         end: 'bottom center', // 當 top-container 的底部到達視窗中心時結束
-        scrub: 4, // 平滑滾動效果
-        markers: true // 顯示標記，方便調試
+        scrub: 4 // 平滑滾動效果
+        // markers: true // 顯示標記，方便調試
       }
     })
   }
