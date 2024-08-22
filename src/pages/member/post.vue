@@ -131,7 +131,7 @@
                   size="x-small"
                   color="blue-darken-3"
                   variant="outlined"
-                  class="mt-2"
+                  class="mt-2 md-btn"
                   @click="openEnrollmentRecordDialog(session)"
                 >
                   <v-icon icon="mdi-progress-check" />
@@ -140,7 +140,7 @@
                   size="x-small"
                   color="teal-darken-1"
                   variant="outlined"
-                  class="mt-1"
+                  class="mt-1 md-btn"
                   @click="openDialog(session)"
                 >
                   <v-icon icon="mdi-pen" />
@@ -149,7 +149,7 @@
                   size="x-small"
                   color="red-darken-3"
                   variant="outlined"
-                  class="mt-1"
+                  class="mt-1 md-btn"
                   @click="openConfirmDialog(session._id.$oid || session._id)"
                 >
                   <v-icon icon="mdi-delete" />
@@ -1095,6 +1095,10 @@ onMounted(() => {
 .enrollment-list-userId {
   font-size: 14px;
   color: #666;
+}
+
+.md-btn {
+  padding-top: 2px;
 }
 
 @include md {
