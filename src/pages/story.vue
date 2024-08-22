@@ -178,7 +178,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { definePage } from 'vue-router/auto'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -205,6 +205,17 @@ const topTitleRight = ref()
 const downIcon = ref()
 
 onMounted(() => {
+  // 等待下一個 tick，確保 DOM 已經更新
+  nextTick(() => {
+    // 等待所有圖片和資源加載完成
+    window.addEventListener('load', () => {
+      // 初始化你的 ScrollTrigger 動畫
+      initScrollTrigger()
+    })
+  })
+})
+
+const initScrollTrigger = () => {
   if (animationRef.value) {
     LottieScrollTrigger({
       trigger: animationRef.value,
@@ -285,7 +296,7 @@ onMounted(() => {
       }
     })
   }
-})
+}
 
 function LottieScrollTrigger (vars) {
   try {
