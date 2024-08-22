@@ -239,10 +239,10 @@ onMounted(() => {
       ease: 'power2.inOut',
       scrollTrigger: {
         trigger: '.top-title',
-        start: '30% top ', // 調整觸發點
-        end: 'center bottom',
-        scrub: 4,
-        markers: true
+        start: '30% 10% ', // 調整觸發點
+        end: 'bottom bottom',
+        scrub: 4
+        // markers: true
         // onEnter: () => console.log('Left title animation started'),
         // onEnterBack: () => console.log('Left title animation started (reverse)'),
         // onLeave: () => console.log('Left title animation completed'),
