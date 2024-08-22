@@ -180,9 +180,9 @@
 
   <v-dialog
     v-model="deleteDialog.open"
-    width="400"
+    width="350"
   >
-    <v-card class="rounded-xl pa-4 pt-6">
+    <v-card class="rounded-lg pa-4">
       <v-card-title style="font-size: 16px;">
         確認刪除
       </v-card-title>

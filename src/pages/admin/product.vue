@@ -1,4 +1,5 @@
 <template>
+  <!-- 主容器 -->
   <v-container>
     <v-row>
       <v-col cols="12">
@@ -6,6 +7,7 @@
           商品管理
         </h2>
       </v-col>
+      <!-- 新增商品按鈕和搜索欄 -->
       <v-col
         cols="12"
         class="d-flex pa-0 ps-4 pe-4 mt-5"
@@ -30,6 +32,7 @@
         />
       </v-col>
 
+      <!-- 數據表格 -->
       <v-col cols="12">
         <v-data-table-server
           v-model:items-per-page="tableItemsPerPage"
@@ -47,6 +50,7 @@
           @update:page="tableLoadItems(false)"
         >
           <template #top />
+          <!-- 自定義列渲染 -->
           <template #[`item.colors`]="{ value }">
             {{ value.join(', ') }}
           </template>
@@ -84,6 +88,8 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <!-- 編輯/新增商品對話框 -->
   <v-dialog
     v-model="dialog.open"
     persistent
@@ -98,6 +104,7 @@
           {{ dialog.id ? '編輯商品' : '新增商品' }}
         </v-card-title>
         <v-card-text class="mt-3 pa-3">
+          <!-- 表單字段 -->
           <v-text-field
             v-model="name.value.value"
             label="名稱"
@@ -159,6 +166,7 @@
             :error-messages="description.errorMessage.value"
           />
 
+          <!-- 現有圖片顯示 -->
           <div
             v-if="existingImages.length > 0"
             class="mb-5 px-2 py-1"
@@ -211,6 +219,7 @@
             </v-row>
           </div>
 
+          <!-- 文件上傳 -->
           <vue-file-agent
             ref="fileAgent"
             v-model="fileRecords"
@@ -252,11 +261,12 @@
     </v-form>
   </v-dialog>
 
+  <!-- 確認刪除對話框 -->
   <v-dialog
     v-model="confirmDialog.open"
     max-width="320"
   >
-    <v-card>
+    <v-card class="px-4 py-3">
       <v-card-title
         class="headline"
         style="font-size: 18px;"
@@ -288,6 +298,7 @@
 </template>
 
 <script setup>
+// 引入所需的函數和組件
 import { definePage } from 'vue-router/auto'
 import { ref } from 'vue'
 import * as yup from 'yup'
@@ -295,6 +306,7 @@ import { useForm, useField } from 'vee-validate'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 
+// 定義頁面名稱
 definePage({
   meta: {
     title: '商品管理 | VPT',
@@ -308,10 +320,9 @@ const createSnackbar = useSnackbar()
 
 const fileAgent = ref(null)
 
+// 對話框狀態管理
 const dialog = ref({
-  // 編輯對話框的狀態
   open: false,
-  // 紀錄編輯中的 id，沒有就是新增，有就是編輯
   id: ''
 })
 
@@ -321,6 +332,7 @@ const confirmDialog = ref({
 
 const existingImages = ref([])
 
+// 打開編輯/新增商品對話框
 const openDialog = (item) => {
   if (item) {
     dialog.value.id = item._id
@@ -345,6 +357,7 @@ const openDialog = (item) => {
   console.log('Dialog opened with id:', dialog.value.id) // 調試訊息
 }
 
+// 關閉對話框
 const closeDialog = () => {
   dialog.value.open = false
   resetForm()
@@ -355,51 +368,32 @@ const closeDialog = () => {
   console.log('Dialog closed') // 調試訊息
 }
 
+// 打開確認刪除對話框
 const openConfirmDialog = () => {
   confirmDialog.value.open = true
 }
 
+// 關閉確認刪除對話框
 const closeConfirmDialog = () => {
   confirmDialog.value.open = false
 }
 
+// 定義顏色、尺寸和分類選項
 const colorItems = [
-  '紅色',
-  '藍色',
-  '黃色',
-  '綠色',
-  '紫色',
-  '橘色',
-  '星空灰',
-  '亮彩橘',
-  '亮粉紅',
-  '新款黑',
-  '新款白',
+  '紅色', '藍色', '黃色', '綠色', '紫色', '橘色',
+  '星空灰', '亮彩橘', '亮粉紅', '新款黑', '新款白',
   '顏色請備註在訂單'
 ]
 
 const sizeItems = [
-  'XS',
-  'S',
-  'M',
-  'L',
-  'XL',
-  '2XL',
-  '3XL',
-  'F',
-  '21',
-  '22',
-  '23',
-  '24',
-  '25',
-  '26',
-  '27',
-  '28',
-  '29',
+  'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', 'F',
+  '21', '22', '23', '24', '25', '26', '27', '28', '29',
   '尺寸請備註在訂單'
 ]
 
 const categories = ['球衣', '球褲', '球襪', '球鞋', '排球', '護具', '其他']
+
+// 定義表單驗證架構
 const schema = yup.object({
   name: yup
     .string()
@@ -428,6 +422,7 @@ const schema = yup.object({
     .boolean()
 })
 
+// 使用 vee-validate 的 useForm 和 useField 函數
 const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
   initialValues: {
@@ -452,6 +447,7 @@ const sizes = useField('sizes')
 const fileRecords = ref([])
 const rawFileRecords = ref([])
 
+// 提交表單
 const submit = handleSubmit(async (values) => {
   console.log('Submit clicked') // 調試訊息
 
@@ -542,10 +538,12 @@ const submit = handleSubmit(async (values) => {
   }
 })
 
+// 移除現有圖片
 const removeExistingImage = (index) => {
   existingImages.value.splice(index, 1)
 }
 
+// 數據表格相關變量
 const tableItemsPerPage = ref(10)
 const tableSortBy = ref([
   { key: 'createdAt', order: 'desc' }
@@ -582,6 +580,8 @@ const tableHeaders = [
 const tableLoading = ref(true)
 const tableItemsLength = ref(0)
 const tableSearch = ref('')
+
+// 加載表格數據
 const tableLoadItems = async (reset, specificPage = null) => {
   if (reset) {
     tablePage.value = 1
@@ -612,8 +612,11 @@ const tableLoadItems = async (reset, specificPage = null) => {
   }
   tableLoading.value = false
 }
+
+// 初始加載表格數據
 tableLoadItems()
 
+// 刪除商品
 const deleteProduct = async () => {
   if (!dialog.value.id) return
 

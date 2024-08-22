@@ -1,4 +1,5 @@
 <template>
+  <!-- 主容器 -->
   <v-container>
     <v-row>
       <v-col cols="12">
@@ -6,6 +7,7 @@
           會員管理
         </h2>
       </v-col>
+      <!-- 新增會員按鈕和搜索欄 -->
       <v-col
         cols="12"
         class="d-flex pa-0 ps-4 pe-4 mt-5"
@@ -28,6 +30,7 @@
           @keydown.enter="tableLoadItems(true)"
         />
       </v-col>
+      <!-- 會員數據表格 -->
       <v-col cols="12">
         <v-data-table-server
           v-model:items-per-page="tableItemsPerPage"
@@ -57,6 +60,8 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <!-- 新增/編輯會員對話框 -->
   <v-dialog
     v-model="dialog.open"
     persistent
@@ -71,6 +76,7 @@
           {{ dialog.id ? '會員資料編輯' : '新增會員' }}
         </v-card-title>
         <v-card-text class="mt-3 pa-3">
+          <!-- 表單字段 -->
           <v-text-field
             v-model="account.value.value"
             :error-messages="account.errorMessage.value"
@@ -183,11 +189,13 @@
       </v-card>
     </v-form>
   </v-dialog>
+
+  <!-- 確認刪除對話框 -->
   <v-dialog
     v-model="confirmDialog.open"
     max-width="320"
   >
-    <v-card>
+    <v-card class="px-4 py-3">
       <v-card-title
         class="headline"
         style="font-size: 18px;"
@@ -219,6 +227,7 @@
 </template>
 
 <script setup>
+// 引入所需的函數和組件
 import validator from 'validator'
 import { definePage } from 'vue-router/auto'
 import { ref } from 'vue'
@@ -227,6 +236,7 @@ import { useForm, useField } from 'vee-validate'
 import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 
+// 定義頁面元數據
 definePage({
   meta: {
     title: '商品管理 | VPT',
@@ -235,16 +245,17 @@ definePage({
   }
 })
 
-const showPassword = ref(false)
-
+// 初始化API和Snackbar
 const { apiAuth } = useApi()
 const { api } = useApi()
 const createSnackbar = useSnackbar()
 
+// 響應式變量
+const showPassword = ref(false)
+
+// 對話框狀態管理
 const dialog = ref({
-  // 編輯對話框的狀態
   open: false,
-  // 紀錄編輯中的 id，沒有就是新增，有就是編輯
   id: ''
 })
 
@@ -252,6 +263,7 @@ const confirmDialog = ref({
   open: false
 })
 
+// 打開編輯/新增會員對話框
 const openDialog = (item) => {
   if (item) {
     dialog.value.id = item._id
@@ -268,6 +280,7 @@ const openDialog = (item) => {
   dialog.value.open = true
 }
 
+// 格式化日期
 const formatDate = (datestring) => {
   const date = new Date(datestring)
   const year = date.getFullYear()
@@ -276,19 +289,23 @@ const formatDate = (datestring) => {
   return `${year}-${month}-${day}`
 }
 
+// 關閉對話框
 const closeDialog = () => {
   dialog.value.open = false
   resetForm()
 }
 
+// 打開確認刪除對話框
 const openConfirmDialog = () => {
   confirmDialog.value.open = true
 }
 
+// 關閉確認刪除對話框
 const closeConfirmDialog = () => {
   confirmDialog.value.open = false
 }
 
+// 定義表單驗證架構
 const schema = yup.object({
   account: yup
     .string()
@@ -341,6 +358,7 @@ const schema = yup.object({
     )
 })
 
+// 使用 vee-validate 的 useForm 和 useField 函數
 const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: schema,
   initialValues: {
@@ -361,6 +379,7 @@ const email = useField('email')
 const phone = useField('phone')
 const birthday = useField('birthday')
 
+// 提交表單
 const submit = handleSubmit(async (values) => {
   try {
     const payload = {
@@ -399,6 +418,7 @@ const submit = handleSubmit(async (values) => {
   }
 })
 
+// 數據表格相關變量
 const tableItemsPerPage = ref(10)
 const tableSortBy = ref([
   { key: 'createdAt', order: 'desc' }
@@ -413,10 +433,11 @@ const tableHeaders = [
   { title: '手機', align: 'left', sortable: true, key: 'phone' },
   { title: '操作', align: 'left', sortable: false, key: 'action' }
 ]
-
 const tableLoading = ref(true)
 const tableItemsLength = ref(0)
 const tableSearch = ref('')
+
+// 加載表格數據
 const tableLoadItems = async (reset) => {
   if (reset) tablePage.value = 1
   tableLoading.value = true
@@ -445,8 +466,11 @@ const tableLoadItems = async (reset) => {
   }
   tableLoading.value = false
 }
+
+// 初始加載表格數據
 tableLoadItems()
 
+// 刪除會員
 const deleteProduct = async () => {
   if (!dialog.value.id) return
 
@@ -479,7 +503,6 @@ const deleteProduct = async () => {
 
 <style lang="scss" scoped>
   @import '/src/styles/settings.scss';
-
 </style>
 
 <route lang="yaml">

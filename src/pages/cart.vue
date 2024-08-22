@@ -1,4 +1,5 @@
 <template>
+  <!-- 主容器 -->
   <v-container
     class="px-4 px-lg-0 py-0 mt-10 mb-16"
     style="max-width: 1200px; min-height: 1200px;"
@@ -7,12 +8,13 @@
       購物車
     </h2>
     <v-row>
-      <!-- 左邊的商品清單 -->
+      <!-- 左側：商品清單 -->
       <v-col
         cols="12"
         sm="7"
         md="8"
       >
+        <!-- 當購物車為空時顯示的卡片 -->
         <v-card
           v-if="items.length === 0"
           class="mb-4 cart-card d-flex justify-center align-center"
@@ -21,6 +23,7 @@
             購物車內尚未加入商品
           </div>
         </v-card>
+        <!-- 遍歷購物車中的每個商品 -->
         <v-card
           v-for="item in items"
           :key="item._id"
@@ -43,15 +46,17 @@
                 width="80"
               />
             </v-col>
-            <!-- 商品名稱和價格 -->
+            <!-- 商品名稱、價格、顏色、尺寸和數量 -->
             <v-col
               cols="6"
               md="9"
               class="d-flex flex-column justify-center"
             >
+              <!-- 商品信息行 -->
               <v-row
                 no-gutters
               >
+                <!-- 商品名稱和價格 -->
                 <v-col
                   cols="12"
                   md
@@ -61,6 +66,7 @@
                     {{ item.p_id.name ?? '未知商品' }} / {{ item.p_id.price ?? 0 }} 元
                   </div>
                 </v-col>
+                <!-- 顏色和尺寸 -->
                 <v-col
                   cols="12"
                   md=""
@@ -70,6 +76,7 @@
                     {{ item.colors }} / {{ item.sizes }}
                   </div>
                 </v-col>
+                <!-- 數量調整區域 -->
                 <v-col
                   cols="12"
                   md="4"
@@ -79,6 +86,7 @@
                     no-gutters
                     class="d-flex align-sm-center justify-sm-center"
                   >
+                    <!-- 減少數量按鈕 -->
                     <v-col
                       cols="1"
                       sm="2"
@@ -99,6 +107,7 @@
                         />
                       </v-btn>
                     </v-col>
+                    <!-- 數量輸入框 -->
                     <v-col
                       cols="3"
                       sm="4"
@@ -116,6 +125,7 @@
                         @keypress.enter="handleQuantityBlur(item)"
                       />
                     </v-col>
+                    <!-- 增加數量按鈕 -->
                     <v-col
                       cols="1"
                       sm="2"
@@ -140,6 +150,7 @@
                 </v-col>
               </v-row>
             </v-col>
+            <!-- 刪除商品按鈕 -->
             <v-col
               cols="1"
               md="1"
@@ -162,12 +173,13 @@
           </v-row>
         </v-card>
       </v-col>
-      <!-- 右邊的總價和結帳按鈕 -->
+      <!-- 右側：訂單備註、總價和結帳按鈕 -->
       <v-col
         cols="12"
         sm="5"
         md="4"
       >
+        <!-- 訂單備註卡片 -->
         <v-card
           class="pa-4 pb-0 cart-card mb-4"
           height="160"
@@ -198,6 +210,7 @@
             </v-col>
           </v-row>
         </v-card>
+        <!-- 總價和結帳按鈕卡片 -->
         <v-card
           class="pa-4 pb-0 cart-card "
           height="150"
@@ -227,7 +240,7 @@
     </v-row>
   </v-container>
 
-  <!-- ConfirmDeleteDialog 組件 -->
+  <!-- 確認刪除對話框組件 -->
   <ConfirmDeleteDialog
     v-model="confirmDialog.open"
     :title="confirmDialog.title"
@@ -247,6 +260,7 @@ import { useSnackbar } from 'vuetify-use-dialog'
 import { useUserStore } from '@/stores/user'
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog.vue'
 
+// 定義頁面元數據
 definePage({
   meta: {
     title: '購物車 | VPT',
@@ -259,11 +273,13 @@ const router = useRouter()
 const user = useUserStore()
 const createSnackbar = useSnackbar()
 
+// 響應式數據
 const items = computed(() => user.cart)
 const loading = ref(false) // 標示是否正在載入或處理請求
 const note = ref('') // 訂單備註
 const confirmDialog = ref({ open: false })
 
+// 載入購物車商品
 const loadItems = () => {
   try {
     loading.value = true
@@ -275,6 +291,7 @@ const loadItems = () => {
   }
 }
 
+// 處理數量輸入框失焦事件
 const handleQuantityBlur = async (item) => {
   if (!item.quantity || item.quantity < 1) {
     item.quantity = 1
@@ -282,12 +299,14 @@ const handleQuantityBlur = async (item) => {
   await updateQuantity(item, item.quantity)
 }
 
+// 驗證輸入的數量
 const validateQuantity = (item) => {
   if (isNaN(item.quantity) || item.quantity === null || item.quantity === '') {
     item.quantity = 1
   }
 }
 
+// 更改商品數量
 const changeQuantity = async (item, newQuantity) => {
   if (!user.isLogin) {
     router.push('/login')
@@ -307,6 +326,7 @@ const changeQuantity = async (item, newQuantity) => {
   await updateQuantity(item, newQuantity)
 }
 
+// 刪除商品
 const deleteItem = async (item, showConfirmation = true) => {
   if (!user.isLogin) {
     router.push('/login')
@@ -329,6 +349,7 @@ const deleteItem = async (item, showConfirmation = true) => {
   }
 }
 
+// 確認對話框動作
 const confirmAction = async () => {
   if (confirmDialog.value.action) {
     await confirmDialog.value.action()
@@ -336,11 +357,13 @@ const confirmAction = async () => {
   closeConfirmDialog()
 }
 
+// 關閉確認對話框
 const closeConfirmDialog = () => {
   confirmDialog.value.open = false
   confirmDialog.value.action = null
 }
 
+// 更新商品數量
 const updateQuantity = async (item, newQuantity = null) => {
   if (!user.isLogin) {
     router.push('/login')
@@ -358,6 +381,7 @@ const updateQuantity = async (item, newQuantity = null) => {
   }
 }
 
+// 錯誤處理
 const handleError = (error) => {
   console.error(error)
   createSnackbar({
@@ -366,10 +390,12 @@ const handleError = (error) => {
   })
 }
 
+// 計算總價
 const totalPrice = computed(() => {
   return items.value.reduce((acc, item) => acc + (item.p_id.price * item.quantity), 0)
 })
 
+// 結帳
 const checkout = async () => {
   loading.value = true
   const result = await user.checkout(note.value)
@@ -389,6 +415,7 @@ const checkout = async () => {
   loading.value = false
 }
 
+// 初始加載購物車商品
 loadItems()
 </script>
 

@@ -153,7 +153,7 @@
     v-model="confirmDialog.open"
     max-width="320"
   >
-    <v-card>
+    <v-card class="px-4 py-3">
       <v-card-title
         class="headline"
         style="font-size: 18px;"
