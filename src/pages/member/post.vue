@@ -23,6 +23,7 @@
             elevation="0"
             variant="flat"
             class="post-btn"
+            :loading="loadingNewSession"
             @click="openDialog(null)"
           >
             刊登場次
@@ -132,6 +133,7 @@
                   color="blue-darken-3"
                   variant="outlined"
                   class="mt-2 md-btn"
+                  :loading="loadingEnrollment[session._id]"
                   @click="openEnrollmentRecordDialog(session)"
                 >
                   <v-icon icon="mdi-progress-check" />
@@ -141,6 +143,7 @@
                   color="teal-darken-1"
                   variant="outlined"
                   class="mt-1 md-btn"
+                  :loading="loadingEdit[session._id]"
                   @click="openDialog(session)"
                 >
                   <v-icon icon="mdi-pen" />
@@ -242,6 +245,7 @@
                   color="blue-darken-3"
                   variant="outlined"
                   class="mt-2"
+                  :loading="loadingEnrollment[session._id]"
                   @click="openEnrollmentRecordDialog(session)"
                 >
                   <v-icon icon="mdi-progress-check" />
@@ -251,6 +255,7 @@
                   color="teal-darken-1"
                   variant="outlined"
                   class="mt-1"
+                  :loading="loadingEdit[session._id]"
                   @click="openDialog(session)"
                 >
                   <v-icon icon="mdi-pen" />
@@ -339,6 +344,7 @@
                   color="blue-darken-3"
                   variant="outlined"
                   class="mt-2"
+                  :loading="loadingEnrollment[session._id]"
                   @click="openEnrollmentRecordDialog(session)"
                 >
                   <v-icon icon="mdi-progress-check" />
@@ -348,6 +354,7 @@
                   color="teal-darken-1"
                   variant="outlined"
                   class="mt-1"
+                  :loading="loadingEdit[session._id]"
                   @click="openDialog(session)"
                 >
                   <v-icon icon="mdi-pen" />
@@ -689,6 +696,9 @@ const today = computed(() => {
 
 const sessions = ref([])
 const venues = ref([])
+const loadingEnrollment = ref({})
+const loadingEdit = ref({})
+const loadingNewSession = ref(false)
 
 const timePickerDialog = ref({
   open: false,
@@ -813,6 +823,11 @@ const submit = handleSubmit(async (values) => {
 })
 
 const openDialog = (session) => {
+  if (session) {
+    loadingEdit.value[session._id] = true
+  } else {
+    loadingNewSession.value = true
+  }
   resetTimePicker() // 重置時間選擇器
   if (session) {
     dialog.value.id = session._id
@@ -851,6 +866,11 @@ const openDialog = (session) => {
     })
   }
   dialog.value.open = true
+  if (session) {
+    loadingEdit.value[session._id] = false
+  } else {
+    loadingNewSession.value = false
+  }
 }
 
 // 添加這個輔助函數來格式化日期
@@ -1033,6 +1053,7 @@ const updateSessionData = async (sessionId) => {
 }
 
 const openEnrollmentRecordDialog = async (session) => {
+  loadingEnrollment.value[session._id] = true
   try {
     const response = await apiAuth.get(`/enrollment/session/${session._id}`)
     enrollmentRecordDialog.value = {
@@ -1047,6 +1068,8 @@ const openEnrollmentRecordDialog = async (session) => {
       text: '無法獲取報名紀錄',
       snackbarProps: { color: 'red-lighten-1' }
     })
+  } finally {
+    loadingEnrollment.value[session._id] = false
   }
 }
 
