@@ -229,21 +229,22 @@ onMounted(() => {
     // 確保元素存在後再設置動畫
     if (topTitleLeft.value && topTitleRight.value) {
     // 設置初始狀態
-      gsap.set(topTitleLeft.value, { y: '-100%', opacity: 0 })
+      gsap.set(topTitleLeft.value, { y: '-100%', autoAlpha: 0 })
       gsap.set(topTitleRight.value, { y: '100%', opacity: 0 })
 
       // 大LOGO動畫
       gsap.to(topTitleLeft.value, {
         y: 0,
-        opacity: 1,
+        autoAlpha: 1,
+        // opacity: 1,
         duration: 2,
         ease: 'power2.inOut',
         scrollTrigger: {
-          trigger: '.top-title',
-          start: '30% 10% ', // 調整觸發點
-          end: 'bottom bottom',
-          scrub: 4
-        // markers: true
+          trigger: '.top-title', // 使用 top-container 作為觸發元素
+          start: 'top 10% ', // 調整觸發點
+          end: '200px bottom',
+          scrub: 4,
+          markers: true
         // onEnter: () => console.log('Left title animation started'),
         // onEnterBack: () => console.log('Left title animation started (reverse)'),
         // onLeave: () => console.log('Left title animation completed'),
