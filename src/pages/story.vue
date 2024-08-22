@@ -228,7 +228,7 @@ onMounted(() => {
   // 確保元素存在後再設置動畫
   if (topTitleLeft.value && topTitleRight.value) {
     // 設置初始狀態
-    gsap.set(topTitleLeft.value, { y: '-100%', opacity: 0 })
+    gsap.set(topTitleLeft.value, { y: '-50%', opacity: 0 })
     gsap.set(topTitleRight.value, { y: '100%', opacity: 0 })
 
     // 大LOGO動畫
@@ -240,9 +240,9 @@ onMounted(() => {
       ease: 'power2.inOut',
       scrollTrigger: {
         trigger: '.top-container', // 使用 top-container 作為觸發元素
-        start: '20% 10% ', // 調整觸發點
+        start: '25% 10% ', // 調整觸發點
         end: '30% bottom',
-        scrub: 4
+        scrub: 3
         // markers: true
         // onEnter: () => console.log('Left title animation started'),
         // onEnterBack: () => console.log('Left title animation started (reverse)'),
@@ -259,9 +259,9 @@ onMounted(() => {
       ease: 'power2.inOut', // 使用緩出效果
       scrollTrigger: {
         trigger: '.top-title-2', // 使用 top-container 作為觸發元素
-        start: 'center 35%', // 當 top-container 的中心到達視窗中心時開始
+        start: 'center 30%', // 當 top-container 的中心到達視窗中心時開始
         end: 'bottom center', // 當 top-container 的底部到達視窗中心時結束
-        scrub: 4 // 平滑滾動效果
+        scrub: 3 // 平滑滾動效果
         // markers: true // 顯示標記，方便調試
       }
     })
