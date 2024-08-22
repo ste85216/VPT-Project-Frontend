@@ -27,19 +27,26 @@
                 >
                   <v-col
                     cols="12"
-                    style="height: 80px;"
+                    style="height: 70px;"
                   >
-                    <v-img
-                      :src="user.avatar"
-                      class="rounded-circle elevation-4"
-                      height="60"
-                      width="60"
-                      cover
-                    />
+                    <router-link to="/member/profile">
+                      <v-img
+                        :src="user.avatar"
+                        class="rounded-circle elevation-4"
+                        height="60"
+                        width="60"
+                        cover
+                      />
+                    </router-link>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    class="ps-1 mb-2 userId-text"
+                  >
+                    <p>{{ user.userId }}</p>
                   </v-col>
                   <v-col
                     cols="3"
-                    class="d-flex align-center justify-center"
                   >
                     <p class="p1 enhanced-text">
                       嗨 !
@@ -604,6 +611,18 @@ onMounted(loadUserData)
     padding: 2px 4px; /* adds some padding around the text */
     background: rgba(255,255,255,0.5);
     border-radius: 20px; /* rounds the corners of the background */
+  }
+
+  .userId-text {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #fff;
+    text-shadow:
+    -1px -1px 1px rgba(0,0,0,0.7),
+    1px -1px 1px rgba(0,0,0,0.7),
+    -1px  1px 1px rgba(0,0,0,0.7),
+    1px  1px 1px rgba(0,0,0,0.7);
   }
 
   .product-link {
