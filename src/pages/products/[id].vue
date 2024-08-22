@@ -54,93 +54,99 @@
         sm="6"
         class="ps-0 ps-sm-10 d-flex flex-column"
       >
-        <v-col>
-          <h2>{{ product.name }}</h2>
-          <v-sheet class="custom-subtitle mt-2">
-            {{ product.description }}
-          </v-sheet>
-        </v-col>
-        <v-col>
-          <h3>尺寸</h3>
-          <v-chip-group
-            v-model="selectedSize"
-            class="pa-0"
-            column
-            filter
-          >
-            <v-chip
-              v-for="(size, index) in product.sizes"
-              :key="index"
-              :value="size"
-              size="large"
-              color="teal-lighten-1"
+        <v-skeleton-loader
+          v-if="loading"
+          type="article"
+        />
+        <template v-else>
+          <v-col>
+            <h2>{{ product.name }}</h2>
+            <v-sheet class="custom-subtitle mt-2">
+              {{ product.description }}
+            </v-sheet>
+          </v-col>
+          <v-col>
+            <h3>尺寸</h3>
+            <v-chip-group
+              v-model="selectedSize"
+              class="pa-0"
+              column
+              filter
             >
-              {{ size }}
-            </v-chip>
-          </v-chip-group>
-        </v-col>
-        <v-col>
-          <h3>顏色</h3>
-          <v-chip-group
-            v-model="selectedColor"
-            class="pa-0"
-            column
-            filter
-          >
-            <v-chip
-              v-for="(color, index) in product.colors"
-              :key="index"
-              :value="color"
-              size="large"
-              color="teal-lighten-1"
+              <v-chip
+                v-for="(size, index) in product.sizes"
+                :key="index"
+                :value="size"
+                size="large"
+                color="teal-lighten-1"
+              >
+                {{ size }}
+              </v-chip>
+            </v-chip-group>
+          </v-col>
+          <v-col>
+            <h3>顏色</h3>
+            <v-chip-group
+              v-model="selectedColor"
+              class="pa-0"
+              column
+              filter
             >
-              {{ color }}
-            </v-chip>
-          </v-chip-group>
-        </v-col>
-        <v-col class="mb-0 mb-sm-">
-          <h3>數量</h3>
-          <v-btn
-            size="x-small"
-            icon
-            variant="text"
-            color="red"
-            @click="changeQuantity(-1)"
-          >
-            <v-icon>mdi-minus</v-icon>
-          </v-btn>
-          <span class="px-5">{{ quantity }}</span>
-          <v-btn
-            size="x-small"
-            icon
-            variant="text"
-            color="#039199"
-            @click="changeQuantity(1)"
-          >
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-
-        <v-col class="py-0 d-flex align-end">
-          <v-card-actions
-            class="pa-0 w-100"
-            justify="center"
-          >
+              <v-chip
+                v-for="(color, index) in product.colors"
+                :key="index"
+                :value="color"
+                size="large"
+                color="teal-lighten-1"
+              >
+                {{ color }}
+              </v-chip>
+            </v-chip-group>
+          </v-col>
+          <v-col class="mb-0 mb-sm-">
+            <h3>數量</h3>
             <v-btn
-              class="addCart-btn"
-              block
-              variant="outlined"
-              @click="addToCart"
+              size="x-small"
+              icon
+              variant="text"
+              color="red"
+              @click="changeQuantity(-1)"
             >
-              <div class="d-flex align-center pe-1">
-                <CartIcon
-                  :size="20"
-                />
-              </div>
-              加入購物車
+              <v-icon>mdi-minus</v-icon>
             </v-btn>
-          </v-card-actions>
-        </v-col>
+            <span class="px-5">{{ quantity }}</span>
+            <v-btn
+              size="x-small"
+              icon
+              variant="text"
+              color="#039199"
+              @click="changeQuantity(1)"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-col>
+
+          <v-col class="py-0 d-flex align-end">
+            <v-card-actions
+              class="pa-0 w-100"
+              justify="center"
+            >
+              <v-btn
+                class="addCart-btn"
+                block
+                variant="outlined"
+                @click="addToCart"
+              >
+                <div class="d-flex align-center pe-1">
+                  <CartIcon
+                    :size="20"
+                  />
+                </div>
+                加入購物車
+              </v-btn>
+            </v-card-actions>
+          </v-col>
+        </template>
       </v-col>
     </v-row>
   </v-container>
