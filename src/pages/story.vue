@@ -178,7 +178,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { definePage } from 'vue-router/auto'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -205,17 +205,6 @@ const topTitleRight = ref()
 const downIcon = ref()
 
 onMounted(() => {
-  // 等待下一個 tick，確保 DOM 已經更新
-  nextTick(() => {
-    // 等待所有圖片和資源加載完成
-    window.addEventListener('load', () => {
-      // 初始化你的 ScrollTrigger 動畫
-      initScrollTrigger()
-    })
-  })
-})
-
-const initScrollTrigger = () => {
   if (animationRef.value) {
     LottieScrollTrigger({
       trigger: animationRef.value,
@@ -239,23 +228,22 @@ const initScrollTrigger = () => {
   // 確保元素存在後再設置動畫
   if (topTitleLeft.value && topTitleRight.value) {
     // 設置初始狀態
-    gsap.set(topTitleLeft.value, { y: '-100%', autoAlpha: 0 })
+    gsap.set(topTitleLeft.value, { y: '-100%', opacity: 0 })
     gsap.set(topTitleRight.value, { y: '100%', opacity: 0 })
 
     // 大LOGO動畫
     gsap.to(topTitleLeft.value, {
       y: 0,
-      autoAlpha: 1,
-      // opacity: 1,
-      duration: 2,
+      opacity: 1,
+      duration: 1.5,
       immediateRender: false,
       ease: 'power2.inOut',
       scrollTrigger: {
-        trigger: '.top-title', // 使用 top-container 作為觸發元素
-        start: 'top 10% ', // 調整觸發點
-        end: '200px bottom',
-        scrub: 4,
-        markers: true
+        trigger: '.top-container', // 使用 top-container 作為觸發元素
+        start: '20% 10% ', // 調整觸發點
+        end: '30% bottom',
+        scrub: 4
+        // markers: true
         // onEnter: () => console.log('Left title animation started'),
         // onEnterBack: () => console.log('Left title animation started (reverse)'),
         // onLeave: () => console.log('Left title animation completed'),
@@ -271,10 +259,10 @@ const initScrollTrigger = () => {
       ease: 'power2.inOut', // 使用緩出效果
       scrollTrigger: {
         trigger: '.top-title-2', // 使用 top-container 作為觸發元素
-        start: 'center 20%', // 當 top-container 的中心到達視窗中心時開始
+        start: 'center 35%', // 當 top-container 的中心到達視窗中心時開始
         end: 'bottom center', // 當 top-container 的底部到達視窗中心時結束
-        scrub: 4 // 平滑滾動效果
-        // markers: true // 顯示標記，方便調試
+        scrub: 4, // 平滑滾動效果
+        markers: true // 顯示標記，方便調試
       }
     })
   }
@@ -296,7 +284,7 @@ const initScrollTrigger = () => {
       }
     })
   }
-}
+})
 
 function LottieScrollTrigger (vars) {
   try {
