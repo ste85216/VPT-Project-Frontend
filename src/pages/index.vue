@@ -85,20 +85,26 @@
             高手必備
           </h1>
           <v-row justify="space-evenly">
-            <v-col
-              cols="12"
-            >
+            <v-col cols="12">
               <v-row>
+                <!-- 第一張卡片 -->
                 <v-col
                   cols="12"
                   sm="4"
                 >
+                  <v-skeleton-loader
+                    v-if="cardsLoading"
+                    type="image"
+                    height="500"
+                    class="skeleton-big"
+                  />
                   <v-hover
-                    v-slot=" {isHovering, props}"
+                    v-else
+                    v-slot="{ isHovering, props }"
                   >
                     <v-card
-                      :elevation="isHovering ? 12: 2"
-                      :class="{'on-hover':isHovering}"
+                      :elevation="isHovering ? 12 : 2"
+                      :class="{'on-hover': isHovering}"
                       v-bind="props"
                       class="card1"
                       to="/products/socks"
@@ -135,6 +141,8 @@
                     </v-card>
                   </v-hover>
                 </v-col>
+
+                <!-- 第二和第三張卡片 -->
                 <v-col
                   cols="12"
                   sm="4"
@@ -145,12 +153,19 @@
                       cols="12"
                       sm="12"
                     >
+                      <v-skeleton-loader
+                        v-if="cardsLoading"
+                        class="skeleton-small"
+                        type="image"
+                        height="238"
+                      />
                       <v-hover
-                        v-slot=" {isHovering, props}"
+                        v-else
+                        v-slot="{ isHovering, props }"
                       >
                         <v-card
                           :elevation="isHovering ? 12 : 2"
-                          :class="{'on-hover':isHovering}"
+                          :class="{'on-hover': isHovering}"
                           v-bind="props"
                           class="card1"
                           height="100%"
@@ -191,12 +206,19 @@
                       cols="12"
                       sm="12"
                     >
+                      <v-skeleton-loader
+                        v-if="cardsLoading"
+                        type="image"
+                        height="238"
+                        class="skeleton-small"
+                      />
                       <v-hover
-                        v-slot=" {isHovering, props}"
+                        v-else
+                        v-slot="{ isHovering, props }"
                       >
                         <v-card
                           :elevation="isHovering ? 12 : 2"
-                          :class="{'on-hover':isHovering}"
+                          :class="{'on-hover': isHovering}"
                           v-bind="props"
                           class="card1"
                           height="100%"
@@ -206,7 +228,7 @@
                             src="/src/assets/products/排球襪動漫風.webp"
                             height="238"
                             cover
-                            class="d-flex "
+                            class="d-flex"
                           >
                             <div class="d-flex flex-row-reverse">
                               <v-btn
@@ -221,7 +243,7 @@
                               </v-btn>
                             </div>
                             <div class="text-white">
-                              <h1 class=" ms-6 mt-16 floating-card-title">
+                              <h1 class="ms-6 mt-16 floating-card-title">
                                 VPT機能排球襪
                               </h1>
                               <div>
@@ -236,16 +258,25 @@
                     </v-col>
                   </v-row>
                 </v-col>
+
+                <!-- 第四張卡片 -->
                 <v-col
                   cols="12"
                   sm="4"
                 >
+                  <v-skeleton-loader
+                    v-if="cardsLoading"
+                    class="skeleton-big"
+                    type="image"
+                    height="500"
+                  />
                   <v-hover
-                    v-slot=" {isHovering, props}"
+                    v-else
+                    v-slot="{ isHovering, props }"
                   >
                     <v-card
-                      :elevation="isHovering ? 12: 2"
-                      :class="{'on-hover':isHovering}"
+                      :elevation="isHovering ? 12 : 2"
+                      :class="{'on-hover': isHovering}"
                       v-bind="props"
                       class="card1"
                       to="/products/shirts"
@@ -257,7 +288,7 @@
                       >
                         <div class="d-flex flex-row-reverse">
                           <v-btn
-                            class="text-none me-2 mt-2 "
+                            class="text-none me-2 mt-2"
                             color="teal-lighten-1"
                             size="x-large"
                             variant="flat"
@@ -291,6 +322,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { definePage } from 'vue-router/auto'
 import Swiper from '../components/Swiper.vue'
 // import { Vue3Spline } from 'vue3-spline'
@@ -299,6 +331,15 @@ definePage({
   meta: {
     title: 'VPT' // 這裡的 title 會被設定到 <title> 標籤
   }
+})
+
+const cardsLoading = ref(true)
+
+onMounted(() => {
+  // 模擬數據加載
+  setTimeout(() => {
+    cardsLoading.value = false
+  }, 500) // 2秒後顯示實際內容
 })
 </script>
 
@@ -374,4 +415,10 @@ definePage({
     text-shadow: 0px 0px 4px rgba(0,0,0,0.5);
   }
 
+.skeleton-big :deep(.v-skeleton-loader__image) {
+  height: 500px;
+}
+.skeleton-small :deep(.v-skeleton-loader__image) {
+  height: 238px;
+}
 </style>
