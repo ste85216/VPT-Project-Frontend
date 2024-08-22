@@ -178,7 +178,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { definePage } from 'vue-router/auto'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -205,66 +205,68 @@ const topTitleRight = ref()
 const downIcon = ref()
 
 onMounted(() => {
-  if (animationRef.value) {
-    LottieScrollTrigger({
-      trigger: animationRef.value,
-      start: 'top center',
-      endTrigger: endLottieRef.value,
-      end: `bottom center+=${animationRef.value.offsetHeight}`,
-      renderer: 'svg',
-      target: animationRef.value,
-      path: volleyballAnimate,
-      scrub: 1
-    })
-  }
+  nextTick(() => {
+    if (animationRef.value) {
+      LottieScrollTrigger({
+        trigger: animationRef.value,
+        start: 'top center',
+        endTrigger: endLottieRef.value,
+        end: `bottom center+=${animationRef.value.offsetHeight}`,
+        renderer: 'svg',
+        target: animationRef.value,
+        path: volleyballAnimate,
+        scrub: 1
+      })
+    }
 
-  // 步驟 1: 設置初始狀態
-  // 將左邊標題移到畫面上方看不見的位置
-  // 添加檢查
-  // console.log('topTitleLeft ref:', topTitleLeft.value)
-  // console.log('topTitleRight ref:', topTitleRight.value)
-  // console.log('downIcon ref:', downIcon.value)
+    // 步驟 1: 設置初始狀態
+    // 將左邊標題移到畫面上方看不見的位置
+    // 添加檢查
+    // console.log('topTitleLeft ref:', topTitleLeft.value)
+    // console.log('topTitleRight ref:', topTitleRight.value)
+    // console.log('downIcon ref:', downIcon.value)
 
-  // 確保元素存在後再設置動畫
-  if (topTitleLeft.value && topTitleRight.value) {
+    // 確保元素存在後再設置動畫
+    if (topTitleLeft.value && topTitleRight.value) {
     // 設置初始狀態
-    gsap.set(topTitleLeft.value, { y: '-100%', opacity: 0 })
-    gsap.set(topTitleRight.value, { y: '100%', opacity: 0 })
+      gsap.set(topTitleLeft.value, { y: '-100%', opacity: 0 })
+      gsap.set(topTitleRight.value, { y: '100%', opacity: 0 })
 
-    // 大LOGO動畫
-    gsap.to(topTitleLeft.value, {
-      y: 0,
-      opacity: 1,
-      duration: 2,
-      ease: 'power2.inOut',
-      scrollTrigger: {
-        trigger: '.top-title',
-        start: '30% 10% ', // 調整觸發點
-        end: 'bottom bottom',
-        scrub: 4
+      // 大LOGO動畫
+      gsap.to(topTitleLeft.value, {
+        y: 0,
+        opacity: 1,
+        duration: 2,
+        ease: 'power2.inOut',
+        scrollTrigger: {
+          trigger: '.top-title',
+          start: '30% 10% ', // 調整觸發點
+          end: 'bottom bottom',
+          scrub: 4
         // markers: true
         // onEnter: () => console.log('Left title animation started'),
         // onEnterBack: () => console.log('Left title animation started (reverse)'),
         // onLeave: () => console.log('Left title animation completed'),
         // onLeaveBack: () => console.log('Left title animation completed (reverse)')
-      }
-    })
+        }
+      })
 
-    // 步驟 3:副標題的動畫
-    gsap.to(topTitleRight.value, {
-      y: 0, // 移動到原本的位置
-      opacity: 1, // 完全顯示
-      duration: 2, // 動畫持續 1.5 秒
-      ease: 'power2.inOut', // 使用緩出效果
-      scrollTrigger: {
-        trigger: '.top-title-2', // 使用 top-container 作為觸發元素
-        start: 'center 20%', // 當 top-container 的中心到達視窗中心時開始
-        end: 'bottom center', // 當 top-container 的底部到達視窗中心時結束
-        scrub: 4 // 平滑滾動效果
+      // 步驟 3:副標題的動畫
+      gsap.to(topTitleRight.value, {
+        y: 0, // 移動到原本的位置
+        opacity: 1, // 完全顯示
+        duration: 2, // 動畫持續 1.5 秒
+        ease: 'power2.inOut', // 使用緩出效果
+        scrollTrigger: {
+          trigger: '.top-title-2', // 使用 top-container 作為觸發元素
+          start: 'center 20%', // 當 top-container 的中心到達視窗中心時開始
+          end: 'bottom center', // 當 top-container 的底部到達視窗中心時結束
+          scrub: 4 // 平滑滾動效果
         // markers: true // 顯示標記，方便調試
-      }
-    })
-  }
+        }
+      })
+    }
+  })
 
   // 為下箭頭圖標添加淡出動畫
   if (downIcon.value) {
