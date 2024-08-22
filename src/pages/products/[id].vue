@@ -11,18 +11,48 @@
           class="rounded-xl elevation-6 skeleton-full-height"
           type="image"
         />
-        <v-img
-          v-else
-          :src="product.images[0]"
-          class="rounded-xl elevation-6 product-img"
-          cover
-          @load="loading = false"
-        />
+        <template v-else>
+          <v-carousel
+            v-model="currentImage"
+            hide-delimiters
+            :show-arrows="false"
+            height="480"
+            class="rounded-xl elevation-6"
+          >
+            <v-carousel-item
+              v-for="(image, index) in product.images"
+              :key="index"
+            >
+              <v-img
+                :src="image"
+                cover
+                height="480"
+                class="product-img"
+              />
+            </v-carousel-item>
+          </v-carousel>
+          <v-row class="mt-4">
+            <v-col
+              v-for="(image, index) in product.images"
+              :key="index"
+              cols="3"
+            >
+              <v-img
+                :src="image"
+                cover
+                height="80"
+                class="thumbnail"
+                :class="{ 'thumbnail-active': currentImage === index }"
+                @click="currentImage = index"
+              />
+            </v-col>
+          </v-row>
+        </template>
       </v-col>
       <v-col
         cols="12"
         sm="6"
-        class="ps-0 ps-sm-10"
+        class="ps-0 ps-sm-10 d-flex flex-column"
       >
         <v-col>
           <h2>{{ product.name }}</h2>
@@ -68,7 +98,7 @@
             </v-chip>
           </v-chip-group>
         </v-col>
-        <v-col class="mb-0 mb-sm-16">
+        <v-col class="mb-0 mb-sm-">
           <h3>數量</h3>
           <v-btn
             size="x-small"
@@ -90,9 +120,10 @@
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-col>
-        <v-col class="py-0">
+
+        <v-col class="py-0 d-flex align-end">
           <v-card-actions
-            class="pa-0 "
+            class="pa-0 w-100"
             justify="center"
           >
             <v-btn
@@ -112,7 +143,6 @@
         </v-col>
       </v-col>
     </v-row>
-    <v-col cols="12" />
   </v-container>
   <v-overlay
     class="align-center justify-center"
@@ -166,6 +196,7 @@ const product = ref({
   sizes: []
 })
 
+const currentImage = ref(0)
 const selectedSize = ref('')
 const selectedColor = ref('')
 const quantity = ref(1)
@@ -337,5 +368,18 @@ h3 {
     color: $secondary-color;
     font-weight: 600;
   }
+}
+
+.thumbnail {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: opacity 0.3s;
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.thumbnail-active {
+  border: 2px solid #00897B;
 }
 </style>
