@@ -1098,7 +1098,7 @@ onMounted(() => {
 }
 
 .md-btn {
-  padding-top: 2px;
+  padding-top: 3px;
 }
 
 @include md {
