@@ -339,7 +339,7 @@ onMounted(() => {
   // 模擬數據加載
   setTimeout(() => {
     cardsLoading.value = false
-  }, 500) // 2秒後顯示實際內容
+  }, 800) // 0.8秒後顯示實際內容
 })
 </script>
 
