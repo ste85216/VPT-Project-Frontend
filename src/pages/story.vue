@@ -231,7 +231,7 @@ onMounted(() => {
     gsap.set(topTitleLeft.value, { y: '-100%', opacity: 0 })
     gsap.set(topTitleRight.value, { y: '100%', opacity: 0 })
 
-    // 左邊標題動畫
+    // 大LOGO動畫
     gsap.to(topTitleLeft.value, {
       y: 0,
       opacity: 1,
@@ -239,10 +239,10 @@ onMounted(() => {
       ease: 'power2.inOut',
       scrollTrigger: {
         trigger: '.top-title',
-        start: '20% top ', // 調整觸發點
+        start: '25% top ', // 調整觸發點
         end: 'center bottom',
-        scrub: 4
-        // markers: true,
+        scrub: 4,
+        markers: true
         // onEnter: () => console.log('Left title animation started'),
         // onEnterBack: () => console.log('Left title animation started (reverse)'),
         // onLeave: () => console.log('Left title animation completed'),
@@ -250,7 +250,7 @@ onMounted(() => {
       }
     })
 
-    // 步驟 3: 創建右邊標題的動畫
+    // 步驟 3:副標題的動畫
     gsap.to(topTitleRight.value, {
       y: 0, // 移動到原本的位置
       opacity: 1, // 完全顯示
