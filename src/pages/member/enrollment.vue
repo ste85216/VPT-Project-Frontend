@@ -183,7 +183,7 @@
                   color="blue-darken-1"
                   variant="outlined"
                   class="mt-2"
-                  @click="addToGoogleCalendar(enrollment)"
+                  @click="addToCalendar(enrollment)"
                 >
                   <v-icon icon="mdi-clock-out" />
                 </v-btn>
@@ -515,8 +515,11 @@ const submitDelete = async () => {
   }
 }
 
-// 新增 Google 日曆功能
-const addToGoogleCalendar = (enrollment) => {
+// 檢測設備類型
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+const isAndroid = /Android/.test(navigator.userAgent)
+
+const addToCalendar = (enrollment) => {
   const session = enrollment.s_id
   const venue = getVenueName(session)
 
@@ -530,11 +533,31 @@ const addToGoogleCalendar = (enrollment) => {
   // 創建事件描述
   const description = `網高: ${session.netheight}\n程度: ${session.level}\n費用: ${session.fee}/人\n備註: ${session.note || '無'}`
 
-  // 生成 Google 日曆 URL
-  const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
+  // 生成日曆 URL
+  let calendarUrl
 
-  // 在新窗口中打開 URL
-  window.open(calendarUrl, '_blank')
+  if (isIOS) {
+    // iOS 日曆 URL scheme
+    calendarUrl = `calshow:/${startDate.getTime()}`
+  } else if (isAndroid) {
+    // Android 日曆 URL scheme
+    calendarUrl = `content://com.android.calendar/time/${startDate.getTime()}`
+  } else {
+    // 其他設備使用 Google 日曆網頁版
+    calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
+  }
+
+  // 嘗試打開日曆應用
+  window.location.href = calendarUrl
+
+  // 如果無法打開應用，提供後備選項
+  setTimeout(() => {
+    if (!document.hidden) {
+      // 如果頁面還可見，說明可能沒有成功打開日曆應用
+      const fallbackUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
+      window.open(fallbackUrl, '_blank')
+    }
+  }, 1000)
 }
 
 onMounted(() => {
