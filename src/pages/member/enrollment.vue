@@ -183,7 +183,7 @@
                   color="blue-darken-1"
                   variant="outlined"
                   class="mt-2"
-                  @click="addToCalendar(enrollment)"
+                  @click="addToGoogleCalendar(enrollment)"
                 >
                   <v-icon icon="mdi-clock-out" />
                 </v-btn>
@@ -515,11 +515,8 @@ const submitDelete = async () => {
   }
 }
 
-// 檢測設備類型
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
-const isAndroid = /Android/.test(navigator.userAgent)
-
-const addToCalendar = (enrollment) => {
+// 新增 Google 日曆功能
+const addToGoogleCalendar = (enrollment) => {
   const session = enrollment.s_id
   const venue = getVenueName(session)
 
@@ -533,43 +530,11 @@ const addToCalendar = (enrollment) => {
   // 創建事件描述
   const description = `網高: ${session.netheight}\n程度: ${session.level}\n費用: ${session.fee}/人\n備註: ${session.note || '無'}`
 
-  // 生成日曆 URL
-  let calendarUrl
+  // 生成 Google 日曆 URL
+  const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
 
-  if (isIOS) {
-    // iOS 特定的日曆 URL scheme
-    const title = encodeURIComponent(`排球場次 - ${venue}`)
-    const location = encodeURIComponent(venue)
-    const notes = encodeURIComponent(description)
-    const startDateFormatted = startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
-    const endDateFormatted = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
-
-    calendarUrl = `calshow:/?title=${title}&location=${location}&notes=${notes}&startdate=${startDateFormatted}&enddate=${endDateFormatted}`
-  } else if (isAndroid) {
-    // 保持 Android 的處理不變
-    const encodedTitle = encodeURIComponent(`排球場次 - ${venue}`)
-    const encodedLocation = encodeURIComponent(venue)
-    const encodedDescription = encodeURIComponent(description)
-
-    calendarUrl = `content://com.android.calendar/events?title=${encodedTitle}&description=${encodedDescription}&location=${encodedLocation}&beginTime=${startDate.getTime()}&endTime=${endDate.getTime()}`
-  } else {
-    // 其他設備使用 Google 日曆網頁版
-    calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
-  }
-
-  // 嘗試打開日曆應用
-  window.location.href = calendarUrl
-
-  // 如果無法打開應用，提供後備選項
-  setTimeout(() => {
-    if (!document.hidden) {
-      // 如果頁面還可見，說明可能沒有成功打開日曆應用
-      createSnackbar({
-        text: '無法自動添加到日曆。請手動添加事件。',
-        snackbarProps: { color: 'orange-darken-2' }
-      })
-    }
-  }, 1000)
+  // 在新窗口中打開 URL
+  window.open(calendarUrl, '_blank')
 }
 
 onMounted(() => {
