@@ -114,7 +114,7 @@
                 </v-btn>
                 <br>
                 <v-btn
-                  size="small"
+                  size="x-small"
                   color="teal-darken-1"
                   variant="outlined"
                   class="mt-2"
@@ -123,7 +123,7 @@
                   <v-icon icon="mdi-pen" />
                 </v-btn>
                 <v-btn
-                  size="small"
+                  size="x-small"
                   color="red-darken-3"
                   variant="outlined"
                   class="mt-2"
