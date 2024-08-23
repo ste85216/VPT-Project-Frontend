@@ -537,16 +537,16 @@ const addToCalendar = (enrollment) => {
   let calendarUrl
 
   if (isIOS) {
-    // iOS 日曆 URL scheme
-    const encodedTitle = encodeURIComponent(`排球場次 - ${venue}`)
-    const encodedLocation = encodeURIComponent(venue)
-    const encodedDescription = encodeURIComponent(description)
-    const startDateString = startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
-    const endDateString = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    // iOS 特定的日曆 URL scheme
+    const title = encodeURIComponent(`排球場次 - ${venue}`)
+    const location = encodeURIComponent(venue)
+    const notes = encodeURIComponent(description)
+    const startDateFormatted = startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    const endDateFormatted = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
 
-    calendarUrl = `webcal://p39-caldav.icloud.com/published/2/MTAxMzQ0NDExOTUxMDEzNDBEhFzYbBhWlpOkdUYQXSHmT6MZs-DkoGZEKE1PPXVX6?start=${startDateString}&end=${endDateString}&title=${encodedTitle}&location=${encodedLocation}&description=${encodedDescription}`
+    calendarUrl = `calshow:/?title=${title}&location=${location}&notes=${notes}&startdate=${startDateFormatted}&enddate=${endDateFormatted}`
   } else if (isAndroid) {
-    // Android 日曆 URL scheme
+    // 保持 Android 的處理不變
     const encodedTitle = encodeURIComponent(`排球場次 - ${venue}`)
     const encodedLocation = encodeURIComponent(venue)
     const encodedDescription = encodeURIComponent(description)
@@ -564,8 +564,10 @@ const addToCalendar = (enrollment) => {
   setTimeout(() => {
     if (!document.hidden) {
       // 如果頁面還可見，說明可能沒有成功打開日曆應用
-      const fallbackUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
-      window.open(fallbackUrl, '_blank')
+      createSnackbar({
+        text: '無法自動添加到日曆。請手動添加事件。',
+        snackbarProps: { color: 'orange-darken-2' }
+      })
     }
   }, 1000)
 }
