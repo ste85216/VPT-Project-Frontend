@@ -81,10 +81,8 @@ const props = defineProps(['_id', 'category', 'description', 'images', 'name', '
   position: absolute;
   width: 100%;
   height: 100%;
-  padding: 12px;
   font-size: 12px;
   font-weight: 600;
-  transition: 2s;
 }
 
 .image-container {
