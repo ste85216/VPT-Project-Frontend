@@ -530,16 +530,10 @@ const addToGoogleCalendar = (enrollment) => {
   const description = `網高: ${session.netheight}\n程度: ${session.level}\n費用: ${session.fee}/人\n備註: ${session.note || '無'}`
 
   // 生成 Google 日曆 URL
-  const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}&recur=RRULE:FREQ=DAILY;COUNT=1&add=${encodeURIComponent('reminder')}&reminders=1440`
+  const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
 
   // 在新視窗中開啟 URL
   window.open(calendarUrl, '_blank')
-
-  // 顯示成功提示
-  createSnackbar({
-    text: '已新增至 Google 日曆',
-    snackbarProps: { color: 'teal-lighten-1' }
-  })
 }
 
 onMounted(() => {
