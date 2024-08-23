@@ -10,12 +10,19 @@
           sm="3"
         >
           <h3 class="opacity-90 mb-4">
-            刊登列表
+            刊登場次
+            <v-icon
+              icon="mdi-information-outline"
+              color="grey-darken-1"
+              size="x-small"
+              class="pb-1"
+              @click="openInformationDialog"
+            />
           </h3>
         </v-col>
         <v-spacer />
         <v-col
-          cols="12"
+          cols="11"
           sm="3"
         >
           <v-btn
@@ -375,6 +382,61 @@
       </v-card>
     </v-col>
   </v-row>
+
+  <!-- 說明對話框 -->
+  <v-dialog
+    v-model="informationDialog.open"
+    max-width="320px"
+  >
+    <v-card class="px-2 py-5 rounded-lg">
+      <v-card-title
+        class="ps-6"
+        style="font-size: 16px;"
+      >
+        操作說明
+      </v-card-title>
+      <v-card-text class="pb-0">
+        <v-row
+          style="font-size: 15px;"
+        >
+          <v-col
+            cols="12"
+          >
+            <v-icon
+              icon="mdi-progress-check"
+              color="blue-darken-1"
+              size="small"
+            />  :  查看場次目前報名狀態按鈕
+          </v-col>
+          <v-col cols="12">
+            <v-icon
+              icon="mdi-pen"
+              color="teal-darken-1"
+              size="small"
+            />  :  編輯場次資訊按鈕
+          </v-col>
+          <v-col cols="12">
+            <v-icon
+              icon="mdi-delete"
+              color="red-darken-3"
+              size="small"
+            />  :  取消場次按鈕
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="teal-lighten-1"
+          variant="outlined"
+          size="small"
+          @click="closeInformationDialog"
+        >
+          確認
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 
   <!-- 刊登場次的Dialog -->
   <v-dialog
@@ -783,6 +845,7 @@ const note = useField('note')
 const dialog = ref({ open: false, id: null })
 const confirmDialog = ref({ open: false })
 const sessionIdToCancel = ref(null)
+const informationDialog = ref({ open: false })
 
 const submit = handleSubmit(async (values) => {
   try {
@@ -821,6 +884,16 @@ const submit = handleSubmit(async (values) => {
     })
   }
 })
+
+const openInformationDialog = (information) => {
+  informationDialog.value = {
+    open: true
+  }
+}
+
+const closeInformationDialog = () => {
+  informationDialog.value.open = false
+}
 
 const openDialog = (session) => {
   if (session) {

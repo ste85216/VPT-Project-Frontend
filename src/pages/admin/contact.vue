@@ -1,11 +1,14 @@
 <template>
+  <!-- 主容器 -->
   <v-container>
     <v-row>
+      <!-- 頁面標題 -->
       <v-col cols="12">
         <h2 class="text-center">
           收件匣
         </h2>
       </v-col>
+      <!-- 搜索欄 -->
       <v-col
         cols="12"
         class="d-flex pa-0 ps-4 pe-4 mt-5"
@@ -22,6 +25,7 @@
           @keydown.enter="tableLoadItems(true)"
         />
       </v-col>
+      <!-- 信件列表表格 -->
       <v-col cols="12">
         <v-data-table-server
           v-model:items-per-page="tableItemsPerPage"
@@ -39,6 +43,7 @@
           @update:page="tableLoadItems(false)"
         >
           <template #top />
+          <!-- 自定義狀態列 -->
           <template #[`item.status`]="{ item }">
             <v-chip
               :color="getStatusColor(item.status)"
@@ -47,6 +52,7 @@
               {{ item.status }}
             </v-chip>
           </template>
+          <!-- 查看內容按鈕 -->
           <template #[`item.content`]="{ item }">
             <v-btn
               class="view-btn"
@@ -56,6 +62,7 @@
               @click="openViewDialog(item)"
             />
           </template>
+          <!-- 刪除按鈕 -->
           <template #[`item.action`]="{ item }">
             <v-btn
               class="delete-btn"
@@ -71,6 +78,7 @@
     </v-row>
   </v-container>
 
+  <!-- 查看完整信件對話框 -->
   <v-dialog
     v-model="viewDialog.open"
     width="520"
@@ -128,6 +136,7 @@
     </v-card>
   </v-dialog>
 
+  <!-- 更新狀態對話框 -->
   <v-dialog
     v-model="statusDialog.open"
     width="400"
@@ -178,6 +187,7 @@
     </v-card>
   </v-dialog>
 
+  <!-- 確認刪除對話框 -->
   <v-dialog
     v-model="deleteDialog.open"
     width="350"
@@ -222,6 +232,7 @@ import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { definePage } from 'vue-router/auto'
 
+// 定義頁面元數據
 definePage({
   meta: {
     title: '收件匣 | VPT',
@@ -230,18 +241,14 @@ definePage({
   }
 })
 
+// 初始化API和Snackbar
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
+// 查看完整信件對話框相關
 const viewDialog = ref({
   open: false,
   item: null
-})
-
-const statusDialog = ref({
-  open: false,
-  item: null,
-  status: ''
 })
 
 const openViewDialog = (item) => {
@@ -253,6 +260,13 @@ const closeViewDialog = () => {
   viewDialog.value.open = false
   viewDialog.value.item = null
 }
+
+// 更新狀態對話框相關
+const statusDialog = ref({
+  open: false,
+  item: null,
+  status: ''
+})
 
 const openStatusDialog = (item) => {
   statusDialog.value.item = item
@@ -266,6 +280,7 @@ const closeStatusDialog = () => {
   statusDialog.value.status = ''
 }
 
+// 刪除對話框相關
 const deleteDialog = ref({
   open: false,
   item: null
@@ -283,6 +298,7 @@ const closeDeleteDialog = () => {
 
 const isDeleting = ref(false)
 
+// 刪除聯絡表單
 const deleteContact = async () => {
   if (!deleteDialog.value.item) return
 
@@ -311,6 +327,7 @@ const deleteContact = async () => {
   }
 }
 
+// 表格相關變量
 const tableItemsPerPage = ref(10)
 const tableSortBy = ref([
   { key: 'createdAt', order: 'desc' }
@@ -330,6 +347,7 @@ const tableLoading = ref(true)
 const tableItemsLength = ref(0)
 const tableSearch = ref('')
 
+// 加載表格數據
 const tableLoadItems = async (reset) => {
   if (reset) tablePage.value = 1
   tableLoading.value = true
@@ -359,6 +377,7 @@ const tableLoadItems = async (reset) => {
 
 const isSubmitting = ref(false)
 
+// 更新狀態
 const updateStatus = async () => {
   if (!statusDialog.value.item) return
 
@@ -393,6 +412,7 @@ const updateStatus = async () => {
   }
 }
 
+// 獲取狀態顏色
 const getStatusColor = (status) => {
   switch (status) {
     case '待處理':
@@ -406,6 +426,7 @@ const getStatusColor = (status) => {
   }
 }
 
+// 初始加載表格數據
 tableLoadItems()
 </script>
 

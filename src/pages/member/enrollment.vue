@@ -1,28 +1,40 @@
 <template>
   <v-row class="mt-4">
+    <!-- 頁面標題 -->
     <v-col
       cols="12"
       class="pt-0"
     >
-      <v-row>
+      <v-row align="center">
         <v-col
           cols="12"
-          sm="3"
+          sm=""
         >
           <h3 class="opacity-90 mb-4">
             報名紀錄
+            <v-icon
+              icon="mdi-information-outline"
+              color="grey-darken-1"
+              size="x-small"
+              class="pb-1"
+              @click="openInformationDialog"
+            />
           </h3>
         </v-col>
+        <v-spacer />
+        <v-col cols="1" />
       </v-row>
     </v-col>
     <v-col class="pt-0 pb-2">
       <v-divider />
     </v-col>
-    <!-- md以上報名紀錄表 -->
+
+    <!-- 中等屏幕及以上的報名紀錄表 -->
     <v-col
       v-if="mdAndUp"
       cols="12"
     >
+      <!-- 表頭 -->
       <v-row class="mb-4">
         <v-col cols="12">
           <v-row
@@ -58,15 +70,15 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col>
-          <v-sheet
-            v-if="enrollments.length === 0"
-            class="opacity-80 text-center"
-          >
-            目前您沒有報名任何場次
-          </v-sheet>
-        </v-col>
       </v-row>
+
+      <!-- 無報名記錄時顯示 -->
+      <v-sheet
+        v-if="enrollments.length === 0"
+        class="opacity-80 text-center"
+      >
+        目前您沒有報名任何場次
+      </v-sheet>
 
       <!-- 場次卡片列表 -->
       <v-card
@@ -104,6 +116,7 @@
                 {{ enrollment.s_id?.note || '無' }}
               </v-col>
               <v-col cols="1">
+                <!-- 操作按鈕 -->
                 <v-btn
                   size="x-small"
                   color="blue-darken-1"
@@ -146,29 +159,29 @@
         </v-row>
       </v-card>
     </v-col>
-    <!-- md以下報名紀錄表 -->
+
+    <!-- 中等屏幕以下的報名紀錄表 -->
     <v-col
       v-if="!mdAndUp"
       cols="12"
     >
+      <!-- 表頭 -->
       <v-row class="mb-4">
         <v-col cols="12">
           <v-row
             class="px-4 text-center"
             style="font-size: 15px;"
           >
-            <v-col>
-              球場
-            </v-col>
-            <v-col>
-              日期/時段
-            </v-col>
+            <v-col>球場</v-col>
+            <v-col>日期/時段</v-col>
             <v-col cols="3">
               操作
             </v-col>
           </v-row>
         </v-col>
       </v-row>
+
+      <!-- 無報名記錄時顯示 -->
       <v-sheet
         v-if="enrollments.length === 0"
         align="center"
@@ -188,15 +201,13 @@
         <v-row>
           <v-col cols="12">
             <v-row class="align-center text-center text-subtitle-2 text-blue-grey-darken-2">
-              <v-col>
-                {{ getVenueName(enrollment.s_id) }}
-              </v-col>
+              <v-col>{{ getVenueName(enrollment.s_id) }}</v-col>
               <v-col>
                 {{ formatDate(enrollment.s_id?.date) }} <br>
                 {{ enrollment.s_id?.time || '未知時段' }}
               </v-col>
               <v-col cols="3">
-                <!-- 新增的 Google 日曆按鈕 -->
+                <!-- 操作按鈕 -->
                 <v-btn
                   size="x-small"
                   color="blue-darken-1"
@@ -233,6 +244,61 @@
     </v-col>
   </v-row>
 
+  <!-- 說明對話框 -->
+  <v-dialog
+    v-model="informationDialog.open"
+    max-width="320px"
+  >
+    <v-card class="px-2 py-5 rounded-lg">
+      <v-card-title
+        class="ps-6"
+        style="font-size: 16px;"
+      >
+        操作說明
+      </v-card-title>
+      <v-card-text class="pb-0">
+        <v-row
+          style="font-size: 15px;"
+        >
+          <v-col
+            cols="12"
+          >
+            <v-icon
+              icon="mdi-clock-out"
+              color="blue-darken-1"
+              size="small"
+            />  :  將場次加入Google 行事曆按鈕
+          </v-col>
+          <v-col cols="12">
+            <v-icon
+              icon="mdi-pen"
+              color="teal-darken-1"
+              size="small"
+            />  :  編輯報名人數按鈕
+          </v-col>
+          <v-col cols="12">
+            <v-icon
+              icon="mdi-delete"
+              color="red-darken-3"
+              size="small"
+            />  :  取消報名按鈕
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="teal-lighten-1"
+          variant="outlined"
+          size="small"
+          @click="closeInformationDialog"
+        >
+          確認
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <!-- 編輯對話框 -->
   <v-dialog
     v-model="editDialog.open"
@@ -245,7 +311,8 @@
       >
         編輯報名
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="pb-0">
+        <!-- 中等屏幕以下顯示的額外信息 -->
         <v-row
           v-if="!mdAndUp"
           class="mb-4 md-down-dialog-text"
@@ -267,6 +334,7 @@
           </v-col>
           <v-divider class="mt-2 mb-5" />
         </v-row>
+        <!-- 編輯表單 -->
         <v-text-field
           v-if="editDialog.showMale"
           v-model="editDialog.male"
@@ -361,12 +429,21 @@ import { useSnackbar } from 'vuetify-use-dialog'
 import { definePage } from 'vue-router/auto'
 import { useDisplay } from 'vuetify'
 
+// 使用 Vuetify 的響應式功能
 const { mdAndUp } = useDisplay()
+
+// 初始化 API 和 Snackbar
 const { api, apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
+// 儲存報名記錄的響應式引用
 const enrollments = ref([])
 
+const informationDialog = ref({
+  open: false
+})
+
+// 編輯對話框的狀態
 const editDialog = ref({
   open: false,
   id: null,
@@ -375,22 +452,26 @@ const editDialog = ref({
   nopreference: 0
 })
 
+// 刪除對話框的狀態
 const deleteDialog = ref({
   open: false,
   id: null
 })
 
+// 獲取場地名稱
 const getVenueName = (s_id) => {
   if (!s_id || !s_id.v_id) return '未知場地'
   return s_id.v_id.name || '未知場地'
 }
 
+// 格式化日期
 const formatDate = (dateString) => {
   if (!dateString) return '未知日期'
   const date = new Date(dateString)
   return date.toLocaleDateString('zh-TW')
 }
 
+// 加載報名記錄
 const loadEnrollments = async () => {
   try {
     const { data } = await apiAuth.get('/enrollment')
@@ -410,6 +491,7 @@ const loadEnrollments = async () => {
   }
 }
 
+// 格式化報名人數
 const formatEnrollmentCount = (enrollment) => {
   const parts = []
   if (enrollment.male > 0) parts.push(`男${enrollment.male}人`)
@@ -418,6 +500,18 @@ const formatEnrollmentCount = (enrollment) => {
   return parts.join(' ')
 }
 
+// 打開說明對話框
+const openInformationDialog = (information) => {
+  informationDialog.value = {
+    open: true
+  }
+}
+
+const closeInformationDialog = () => {
+  informationDialog.value.open = false
+}
+
+// 打開編輯對話框
 const openEditDialog = (enrollment) => {
   editDialog.value = {
     open: true,
@@ -436,10 +530,12 @@ const openEditDialog = (enrollment) => {
   }
 }
 
+// 關閉編輯對話框
 const closeEditDialog = () => {
   editDialog.value.open = false
 }
 
+// 提交編輯
 const submitEdit = async () => {
   try {
     const newMale = editDialog.value.showMale ? parseInt(editDialog.value.male) : 0
@@ -450,10 +546,12 @@ const submitEdit = async () => {
     const oldNopreference = editDialog.value.originalNopreference
     const session = editDialog.value.session
 
+    // 計算人數變化
     const maleDiff = newMale - oldMale
     const femaleDiff = newFemale - oldFemale
     const nopreferenceDiff = newNopreference - oldNopreference
 
+    // 檢查是否超過可用名額
     if (session.nopreference > 0) {
       if (maleDiff + femaleDiff + nopreferenceDiff > session.nopreference) {
         throw new Error(`超過可用名額。當前剩餘 ${session.nopreference} 個名額。`)
@@ -464,11 +562,13 @@ const submitEdit = async () => {
       }
     }
 
+    // 準備更新數據
     const updateData = {}
     if (editDialog.value.showMale) updateData.male = newMale
     if (editDialog.value.showFemale) updateData.female = newFemale
     if (editDialog.value.showNopreference) updateData.nopreference = newNopreference
 
+    // 發送更新請求
     await apiAuth.patch(`/enrollment/${editDialog.value.id}`, updateData)
     createSnackbar({
       text: '報名更新成功',
@@ -484,6 +584,7 @@ const submitEdit = async () => {
   }
 }
 
+// 打開刪除確認對話框
 const openDeleteDialog = (id) => {
   deleteDialog.value = {
     open: true,
@@ -491,15 +592,16 @@ const openDeleteDialog = (id) => {
   }
 }
 
+// 關閉刪除確認對話框
 const closeDeleteDialog = () => {
   deleteDialog.value.open = false
 }
 
+// 加載場次數據
 const loadSessions = async () => {
   try {
     const { data } = await api.get('/session')
     if (Array.isArray(data.result)) {
-      // 這裡我們只是簡單地更新場次數據，您可能需要根據您的需求進行調整
       console.log('Sessions reloaded:', data.result)
     } else {
       console.error('Unexpected data format:', data)
@@ -513,6 +615,7 @@ const loadSessions = async () => {
   }
 }
 
+// 提交刪除請求
 const submitDelete = async () => {
   try {
     const response = await apiAuth.delete(`/enrollment/${deleteDialog.value.id}`)
@@ -534,6 +637,7 @@ const submitDelete = async () => {
   }
 }
 
+// 添加到 Google 日曆
 const addToGoogleCalendar = (enrollment) => {
   const session = enrollment.s_id
   const venue = getVenueName(session)
@@ -555,10 +659,12 @@ const addToGoogleCalendar = (enrollment) => {
   window.open(calendarUrl, '_blank')
 }
 
+// 組件掛載時加載數據
 onMounted(() => {
   loadEnrollments()
 })
 
+// 定義頁面元數據
 definePage({
   meta: {
     title: '報名紀錄 | VPT',
@@ -567,6 +673,7 @@ definePage({
   }
 })
 </script>
+
 <style lang="scss" scoped>
 .post-card {
   background-color: #f5f5f5;

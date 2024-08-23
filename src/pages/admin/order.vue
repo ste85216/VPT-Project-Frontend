@@ -1,11 +1,14 @@
 <template>
+  <!-- 主容器 -->
   <v-container>
     <v-row>
+      <!-- 頁面標題 -->
       <v-col cols="12">
         <h2 class="text-center">
           訂單管理
         </h2>
       </v-col>
+      <!-- 搜索欄 -->
       <v-col
         cols="12"
         class="d-flex pa-0 ps-4 pe-4 mt-5"
@@ -23,6 +26,7 @@
           @keydown.enter="tableLoadItems(true)"
         />
       </v-col>
+      <!-- 訂單數據表格 -->
       <v-col cols="12">
         <v-data-table
           v-model:expanded="expanded"
@@ -42,10 +46,12 @@
           @update:sort-by="tableLoadItems(false)"
           @update:page="tableLoadItems(false)"
         >
+          <!-- 展開的訂單詳情 -->
           <template #expanded-row="{ columns, item }">
             <tr>
               <td :colspan="columns.length">
                 <v-list>
+                  <!-- 訂單詳情表頭 -->
                   <v-list-item
                     class="mb-3 opacity-90"
                     style="font-size: 12px;"
@@ -74,6 +80,7 @@
                       </v-col>
                     </v-row>
                   </v-list-item>
+                  <!-- 訂單中的每個商品項目 -->
                   <v-list-item
                     v-for="cartItem in item.cart"
                     :key="cartItem.p_id._id"
@@ -136,6 +143,7 @@ import { useApi } from '@/composables/axios'
 import { useSnackbar } from 'vuetify-use-dialog'
 import { definePage } from 'vue-router/auto'
 
+// 定義頁面元數據
 definePage({
   meta: {
     title: '訂單管理 | VPT',
@@ -144,9 +152,11 @@ definePage({
   }
 })
 
+// 初始化API和Snackbar
 const { apiAuth } = useApi()
 const createSnackbar = useSnackbar()
 
+// 表格相關的響應式變量
 const tableItemsPerPage = ref(10)
 const tableSortBy = ref([{ key: 'createdAt', order: 'desc' }])
 const tablePage = ref(1)
@@ -164,6 +174,7 @@ const tableItemsLength = ref(0)
 const tableSearch = ref('')
 const expanded = ref([])
 
+// 加載表格數據
 const tableLoadItems = async (reset) => {
   if (reset) tablePage.value = 1
   tableLoading.value = true
@@ -180,6 +191,7 @@ const tableLoadItems = async (reset) => {
     tableItems.value.splice(0, tableItems.value.length, ...data.result)
     tableItemsLength.value = data.result.length
 
+    // 計算訂單總額並格式化日期
     tableItems.value.forEach(order => {
       order.total = order.cart.reduce((sum, item) => sum + item.p_id.price * item.quantity, 0)
       order.createdAt = formatDate(order.createdAt)
@@ -196,11 +208,13 @@ const tableLoadItems = async (reset) => {
   tableLoading.value = false
 }
 
+// 格式化日期函數
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' }
   return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
+// 組件掛載時加載數據
 onMounted(() => {
   tableLoadItems()
 })
