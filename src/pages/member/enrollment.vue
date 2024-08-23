@@ -477,7 +477,6 @@ const loadEnrollments = async () => {
     const { data } = await apiAuth.get('/enrollment')
     if (Array.isArray(data.result)) {
       enrollments.value = data.result
-      console.log('Loaded enrollments:', enrollments.value)
     } else {
       console.error('Unexpected data format:', data)
       throw new Error('資料格式錯誤')

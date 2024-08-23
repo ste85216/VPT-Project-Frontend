@@ -390,7 +390,7 @@ const handleError = (error) => {
   })
 }
 
-// 計算總價
+// 計算總價 acc累加器 0 是初始值
 const totalPrice = computed(() => {
   return items.value.reduce((acc, item) => acc + (item.p_id.price * item.quantity), 0)
 })

@@ -362,7 +362,6 @@ const loadOrders = async () => {
   try {
     const { data } = await apiAuth.get('/order')
     orders.value = data.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    console.log(data.result)
   } catch (error) {
     console.log(error)
     createSnackbar({

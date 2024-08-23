@@ -1056,8 +1056,6 @@ const loadVenues = async () => {
         fullName: `[${cityCounty}] ${venue.name}`
       }
     }).sort((a, b) => a.city.localeCompare(b.city, 'zh-TW'))
-
-    console.log(`Loaded ${venues.value.length} venues`)
   } catch (error) {
     console.error('Error loading venues:', error)
     createSnackbar({

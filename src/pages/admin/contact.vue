@@ -87,41 +87,51 @@
       <v-card-title style="font-size: 18px;">
         查看完整信件
       </v-card-title>
-      <v-card-text class="mt-3 pa-0">
-        <v-list>
-          <v-list-item>
-            <v-list-item-title class="card-title">
+      <v-card-text class="mt-3 ps-4">
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <p class="card-title">
               姓名
-            </v-list-item-title>
-            <v-list-item-text class="card-text">
+            </p>
+            <p class="card-text">
               {{ viewDialog.item?.name }}
-            </v-list-item-text>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title class="card-title">
+            </p>
+          </v-col>
+          <v-col
+            cols="12"
+          >
+            <p class="card-title">
               信箱
-            </v-list-item-title>
-            <v-list-item-text class="card-text">
+            </p>
+            <p class="card-text">
               {{ viewDialog.item?.email }}
-            </v-list-item-text>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title class="card-title">
+            </p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            cols="12"
+          >
+            <p class="card-title">
               主旨
-            </v-list-item-title>
-            <v-list-item-text class="card-text">
+            </p>
+            <p class="card-text">
               {{ viewDialog.item?.subject }}
-            </v-list-item-text>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title class="card-title">
+            </p>
+          </v-col>
+          <v-col
+            cols="12"
+          >
+            <p class="card-title">
               內容
-            </v-list-item-title>
-            <v-list-item-text class="card-text">
+            </p>
+            <p class="card-text">
               {{ viewDialog.item?.content }}
-            </v-list-item-text>
-          </v-list-item>
-        </v-list>
+            </p>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer />

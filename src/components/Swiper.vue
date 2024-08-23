@@ -78,7 +78,6 @@ const loadProducts = async () => {
 
     if (data.success) {
       products.value = data.result.data.filter(product => product.sell)
-      console.log('Loaded products:', products.value.length) // 添加這行來檢查加載的產品數量
     } else {
       throw new Error(data.message || '載入商品失敗')
     }
