@@ -105,9 +105,19 @@
               </v-col>
               <v-col cols="1">
                 <v-btn
+                  size="x-small"
+                  color="blue-darken-1"
+                  variant="outlined"
+                  @click="addToGoogleCalendar(enrollment)"
+                >
+                  <v-icon icon="mdi-clock-out" />
+                </v-btn>
+                <br>
+                <v-btn
                   size="small"
                   color="teal-darken-1"
                   variant="outlined"
+                  class="mt-2"
                   @click="openEditDialog(enrollment)"
                 >
                   <v-icon icon="mdi-pen" />
@@ -182,7 +192,6 @@
                   size="x-small"
                   color="blue-darken-1"
                   variant="outlined"
-                  class="mt-2"
                   @click="addToGoogleCalendar(enrollment)"
                 >
                   <v-icon icon="mdi-clock-out" />
@@ -192,6 +201,7 @@
                   size="x-small"
                   color="teal-darken-1"
                   variant="outlined"
+                  class="mt-2"
                   @click="openEditDialog(enrollment)"
                 >
                   <v-icon icon="mdi-pen" />
