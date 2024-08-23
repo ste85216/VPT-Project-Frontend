@@ -538,10 +538,20 @@ const addToCalendar = (enrollment) => {
 
   if (isIOS) {
     // iOS 日曆 URL scheme
-    calendarUrl = `calshow:/${startDate.getTime()}`
+    const encodedTitle = encodeURIComponent(`排球場次 - ${venue}`)
+    const encodedLocation = encodeURIComponent(venue)
+    const encodedDescription = encodeURIComponent(description)
+    const startDateString = startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+    const endDateString = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+
+    calendarUrl = `webcal://p39-caldav.icloud.com/published/2/MTAxMzQ0NDExOTUxMDEzNDBEhFzYbBhWlpOkdUYQXSHmT6MZs-DkoGZEKE1PPXVX6?start=${startDateString}&end=${endDateString}&title=${encodedTitle}&location=${encodedLocation}&description=${encodedDescription}`
   } else if (isAndroid) {
     // Android 日曆 URL scheme
-    calendarUrl = `content://com.android.calendar/time/${startDate.getTime()}`
+    const encodedTitle = encodeURIComponent(`排球場次 - ${venue}`)
+    const encodedLocation = encodeURIComponent(venue)
+    const encodedDescription = encodeURIComponent(description)
+
+    calendarUrl = `content://com.android.calendar/events?title=${encodedTitle}&description=${encodedDescription}&location=${encodedLocation}&beginTime=${startDate.getTime()}&endTime=${endDate.getTime()}`
   } else {
     // 其他設備使用 Google 日曆網頁版
     calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
