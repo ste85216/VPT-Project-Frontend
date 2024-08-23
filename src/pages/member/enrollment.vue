@@ -177,6 +177,17 @@
                 {{ enrollment.s_id?.time || '未知時段' }}
               </v-col>
               <v-col cols="3">
+                <!-- 新增的 Google 日曆按鈕 -->
+                <v-btn
+                  size="x-small"
+                  color="blue-darken-1"
+                  variant="outlined"
+                  class="mt-2"
+                  @click="addToGoogleCalendar(enrollment)"
+                >
+                  <v-icon icon="mdi-clock-out" />
+                </v-btn>
+                <br>
                 <v-btn
                   size="x-small"
                   color="teal-darken-1"
@@ -502,6 +513,28 @@ const submitDelete = async () => {
       snackbarProps: { color: 'red-lighten-1' }
     })
   }
+}
+
+// 新增 Google 日曆功能
+const addToGoogleCalendar = (enrollment) => {
+  const session = enrollment.s_id
+  const venue = getVenueName(session)
+
+  // 創建事件開始和結束時間
+  const [startTime, endTime] = session.time.split('-')
+  const startDate = new Date(session.date)
+  startDate.setHours(parseInt(startTime.split(':')[0]), parseInt(startTime.split(':')[1]))
+  const endDate = new Date(session.date)
+  endDate.setHours(parseInt(endTime.split(':')[0]), parseInt(endTime.split(':')[1]))
+
+  // 創建事件描述
+  const description = `網高: ${session.netheight}\n程度: ${session.level}\n費用: ${session.fee}/人\n備註: ${session.note || '無'}`
+
+  // 生成 Google 日曆 URL
+  const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`排球場次 - ${venue}`)}&dates=${startDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}/${endDate.toISOString().replace(/-|:|\.\d\d\d/g, '')}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(venue)}`
+
+  // 在新窗口中打開 URL
+  window.open(calendarUrl, '_blank')
 }
 
 onMounted(() => {
