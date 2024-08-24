@@ -252,6 +252,7 @@ const createSnackbar = useSnackbar()
 
 // 響應式變量
 const showPassword = ref(false)
+const isEditing = ref(false)
 
 // 對話框狀態管理
 const dialog = ref({
@@ -266,20 +267,21 @@ const confirmDialog = ref({
 // 打開編輯/新增會員對話框
 const openDialog = (item) => {
   if (item) {
+    isEditing.value = true
     dialog.value.id = item._id
     account.value.value = item.account
     name.value.value = item.name
     nickname.value.value = item.nickname
     email.value.value = item.email
     phone.value.value = item.phone
-    birthday.value.value = formatDate(item.birthday)
-    password.value.value = item.password
+    birthday.value.value = item.birthday ? formatDate(item.birthday) : ''
   } else {
+    isEditing.value = false
     dialog.value.id = ''
+    resetForm()
   }
   dialog.value.open = true
 }
-
 // 格式化日期
 const formatDate = (datestring) => {
   const date = new Date(datestring)
@@ -320,8 +322,11 @@ const schema = yup.object({
     ),
   password: yup
     .string()
-    .required('請輸入密碼')
-    .min(8, '密碼至少需輸入8個字'),
+    .when('$isEditing', {
+      is: false,
+      then: () => yup.string().required('請輸入密碼').min(8, '密碼至少需輸入8個字'),
+      otherwise: () => yup.string().notRequired()
+    }),
   name: yup
     .string()
     .required('請輸入姓名'),
@@ -356,7 +361,7 @@ const schema = yup.object({
         return validator.isDate(value)
       }
     )
-})
+}).test('$isEditing', '', () => true)
 
 // 使用 vee-validate 的 useForm 和 useField 函數
 const { handleSubmit, isSubmitting, resetForm } = useForm({
@@ -369,8 +374,10 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
     phone: '',
     birthday: '',
     password: ''
-  }
+  },
+  validateOnMount: false
 })
+
 const account = useField('account')
 const password = useField('password')
 const name = useField('name')
@@ -381,26 +388,30 @@ const birthday = useField('birthday')
 
 // 提交表單
 const submit = handleSubmit(async (values) => {
+  console.log('Submit function called', values)
   try {
     const payload = {
-      account: values.account,
-      password: values.password,
+      account: values.account.toLowerCase(),
       name: values.name,
       nickname: values.nickname,
       email: values.email,
       phone: values.phone,
-      birthday: new Date(values.birthday) // 確保日期格式正確
+      birthday: values.birthday ? new Date(values.birthday).toISOString() : undefined
     }
-    if (dialog.value.id === '') {
-      await api.post('/user', payload)
+    console.log('Payload prepared', payload)
+
+    let response
+    if (!isEditing.value) {
+      payload.password = values.password
+      response = await api.post('/user', payload)
     } else {
-      await apiAuth.patch('/user/' + dialog.value.id, payload)
+      response = await apiAuth.patch('/user/' + dialog.value.id, payload)
     }
 
-    console.log(values.birthday)
+    console.log('API response', response)
 
     createSnackbar({
-      text: dialog.value.id === '' ? '新增成功' : '編輯成功',
+      text: isEditing.value ? '編輯成功' : '新增成功',
       snackbarProps: {
         color: 'teal-darken-1'
       }
@@ -408,7 +419,8 @@ const submit = handleSubmit(async (values) => {
     closeDialog()
     tableLoadItems(true)
   } catch (error) {
-    console.log(error)
+    console.error('Error in submit function', error)
+    console.error('Error response:', error.response)
     createSnackbar({
       text: error?.response?.data?.message || '發生錯誤',
       snackbarProps: {

@@ -202,6 +202,7 @@ definePage({
 })
 
 const showPassword = ref(false)
+const isEditing = ref(false)
 
 const { apiAuth } = useApi()
 const { api } = useApi()
@@ -220,16 +221,19 @@ const confirmDialog = ref({
 
 const openDialog = (item) => {
   if (item) {
+    isEditing.value = true
     dialog.value.id = item._id
     account.value.value = item.account
     email.value.value = item.email
     phone.value.value = item.phone
-    password.value.value = item.password
   } else {
+    isEditing.value = false
     dialog.value.id = ''
+    resetForm()
   }
   dialog.value.open = true
 }
+
 const closeDialog = () => {
   dialog.value.open = false
   resetForm()
@@ -257,8 +261,11 @@ const schema = yup.object({
     ),
   password: yup
     .string()
-    .required('請輸入密碼')
-    .min(8, '密碼至少需輸入8個字'),
+    .when('$isEditing', {
+      is: false,
+      then: () => yup.string().required('請輸入密碼').min(8, '密碼至少需輸入8個字'),
+      otherwise: () => yup.string()
+    }),
   email: yup
     .string()
     .required('請輸入信箱')
@@ -287,8 +294,10 @@ const { handleSubmit, isSubmitting, resetForm } = useForm({
     email: '',
     phone: '',
     password: ''
-  }
+  },
+  validateOnMount: false
 })
+
 const account = useField('account')
 const password = useField('password')
 const email = useField('email')
@@ -297,26 +306,30 @@ const phone = useField('phone')
 const submit = handleSubmit(async (values) => {
   try {
     const payload = {
-      account: values.account,
-      password: values.password,
+      account: values.account.toLowerCase(),
       email: values.email,
       phone: values.phone,
       role: 1
     }
-    if (dialog.value.id === '') {
-      await api.post('/user', payload)
+    if (!isEditing.value) {
+      // 新增管理者
+      payload.password = values.password
+      const response = await api.post('/user', payload)
+      console.log('New admin created:', response.data)
+      createSnackbar({
+        text: '新增管理者成功',
+        snackbarProps: { color: 'teal-darken-1' }
+      })
     } else {
-      await apiAuth.patch('/user/' + dialog.value.id, payload)
+      // 編輯管理者
+      const response = await apiAuth.patch('/user/' + dialog.value.id, payload)
+      console.log('Admin updated:', response.data)
+      createSnackbar({
+        text: '編輯管理者成功',
+        snackbarProps: { color: 'teal-darken-1' }
+      })
     }
 
-    console.log(values.birthday)
-
-    createSnackbar({
-      text: dialog.value.id === '' ? '新增成功' : '編輯成功',
-      snackbarProps: {
-        color: 'teal-darken-1'
-      }
-    })
     closeDialog()
     tableLoadItems(true)
   } catch (error) {

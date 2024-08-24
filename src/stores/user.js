@@ -30,7 +30,7 @@ export const useUserStore = defineStore('user', () => {
   const login = async (values) => {
     try {
       const { data } = await api.post('/user/login', {
-        account: values.Laccount,
+        account: values.Laccount.toLowerCase(), // 將帳號轉換為小寫
         password: values.Lpassword
       })
       token.value = data.result.token
@@ -41,7 +41,7 @@ export const useUserStore = defineStore('user', () => {
       await loadCart() // 登入後立即載入最新的購物車數據
       return '登入成功'
     } catch (error) {
-      console.log(error)
+      console.error(error) // 使用 console.error 來記錄錯誤
       return error?.response?.data?.message || '登入失敗，請稍後再試'
     }
   }
@@ -51,7 +51,7 @@ export const useUserStore = defineStore('user', () => {
 
     try {
       const { data } = await apiAuth.get('/user/profile')
-      account.value = data.result.account
+      account.value = data.result.account.toLowerCase()
       role.value = data.result.role
       avatar.value = data.result.avatar
       name.value = data.result.name
@@ -148,7 +148,7 @@ export const useUserStore = defineStore('user', () => {
   const updateProfile = async (profile) => {
     try {
       const { data } = await apiAuth.patch('/user/profile', profile)
-      account.value = data.result.account
+      account.value = data.result.account.toLowerCase()
       role.value = data.result.role
       avatar.value = data.result.avatar
       cart.value = data.result.cart || []
