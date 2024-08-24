@@ -114,6 +114,7 @@
                         icon="mdi-information-outline"
                         size="x-small"
                         color="red-darken-4"
+                        style="margin-bottom:2px;"
                         @click="openLevelInfoDialog"
                       /> 程度:
                       <v-chip-group
