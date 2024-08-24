@@ -110,7 +110,12 @@
                     class="mt-4"
                   >
                     <div>
-                      程度:
+                      <v-icon
+                        icon="mdi-information-outline"
+                        size="x-small"
+                        color="red-darken-4"
+                        @click="openLevelInfoDialog"
+                      /> 程度:
                       <v-chip-group
                         v-model="filters.level"
                         filter
@@ -584,6 +589,42 @@
     </v-row>
   </v-container>
 
+  <v-dialog
+    v-model="levelInfoDialog.open"
+    max-width="1200px"
+  >
+    <v-card
+      class="overflow-hidden"
+    >
+      <v-card-title style="font-size: 18px;">
+        排球程度分級表
+      </v-card-title>
+      <v-row>
+        <v-col cols="12">
+          <v-img
+            src="../assets/排球程度表.jpg"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          class="pt-0"
+        >
+          <v-card-actions class="pt-0 pe-4 pb-3">
+            <v-spacer />
+            <v-btn
+              variant="outlined"
+              size="small"
+              color="teal-darken-1"
+              @click="closeLevelInfoDialog"
+            >
+              確認
+            </v-btn>
+          </v-card-actions>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-dialog>
+
   <!-- 報名對話框 -->
   <v-dialog
     v-model="enrollDialog.open"
@@ -717,6 +758,18 @@ const enrollDialog = ref({
   female: 0,
   nopreference: 0
 })
+
+const levelInfoDialog = ref({
+  open: false
+})
+
+const openLevelInfoDialog = () => {
+  levelInfoDialog.value.open = true
+}
+
+const closeLevelInfoDialog = () => {
+  levelInfoDialog.value.open = false
+}
 
 // 場次相關函數
 // 加載場次資料
