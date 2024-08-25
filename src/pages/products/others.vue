@@ -6,7 +6,7 @@
         class="d-flex justify-space-between pb-0"
       >
         <v-row>
-          <v-col><h2>所有商品</h2></v-col>
+          <v-col><h2>其他</h2></v-col>
           <v-col
             sm="3"
           >
