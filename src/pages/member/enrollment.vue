@@ -124,7 +124,7 @@
                   @click="addToGoogleCalendar(enrollment)"
                 >
                   <v-icon
-                    class="pt-1"
+
                     icon="mdi-clock-out"
                   />
                 </v-btn>
@@ -133,11 +133,10 @@
                   size="x-small"
                   color="teal-darken-1"
                   variant="outlined"
-                  class="mt-2"
+                  class="mt-1"
                   @click="openEditDialog(enrollment)"
                 >
                   <v-icon
-                    class="pt-1"
                     icon="mdi-pen"
                   />
                 </v-btn>
@@ -145,11 +144,10 @@
                   size="x-small"
                   color="red-darken-3"
                   variant="outlined"
-                  class="mt-2"
+                  class="mt-1"
                   @click="openDeleteDialog(enrollment._id)"
                 >
                   <v-icon
-                    class="pt-1"
                     icon="mdi-delete"
                   />
                 </v-btn>
