@@ -22,7 +22,7 @@
         </v-col>
         <v-spacer />
         <v-col
-          cols="11"
+          cols="12"
           sm="3"
         >
           <v-btn
