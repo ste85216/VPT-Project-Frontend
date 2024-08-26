@@ -2,7 +2,7 @@
 <template>
   <v-container
     class="mt-8 mb-12"
-    style="max-width: 1200px;"
+    style="max-width: 1200px; min-height: 75%"
     fluid
   >
     <!-- 標題 -->

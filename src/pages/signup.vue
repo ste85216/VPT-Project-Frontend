@@ -597,9 +597,8 @@
     <v-card class="overflow-hidden">
       <v-card-title
         style="font-size: 18px;"
-        class="d-flex justify-space-between"
+        class="d-flex justify-end"
       >
-        排球程度分級表
         <v-icon
           icon="mdi-close-circle-outline"
           color="red-lighten-1"
