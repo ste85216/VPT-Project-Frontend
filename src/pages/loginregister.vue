@@ -103,7 +103,6 @@
       <!-- 註冊表單容器 -->
       <v-container
         class="register wrapper ps-8 pe-8 pt-8"
-        style="height: 750px;"
       >
         <v-row>
           <v-col cols="12">
@@ -532,7 +531,7 @@ const showRegister = () => {
     const login = document.querySelector('.login')
     const register = document.querySelector('.register')
     const loginRegister = document.querySelector('#login-register')
-    loginRegister.style.height = '800px'
+    loginRegister.style.height = '730px'
     login.style.transform = 'translateX(-420px)'
     register.style.transform = 'translateX(-420px)'
   } else {
