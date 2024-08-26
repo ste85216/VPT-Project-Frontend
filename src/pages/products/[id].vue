@@ -77,7 +77,6 @@
                 v-for="(size, index) in product.sizes"
                 :key="index"
                 :value="size"
-                size="large"
                 color="teal-lighten-1"
               >
                 {{ size }}
@@ -96,7 +95,6 @@
                 v-for="(color, index) in product.colors"
                 :key="index"
                 :value="color"
-                size="large"
                 color="teal-lighten-1"
               >
                 {{ color }}
