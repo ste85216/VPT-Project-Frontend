@@ -358,6 +358,12 @@
             <v-card-title style="font-size: 16px;">
               {{ user.name }}
             </v-card-title>
+            <v-card-subtitle
+              class="text-blue-grey-darken-4"
+              style="font-size: 14px;"
+            >
+              {{ user.userId }}
+            </v-card-subtitle>
 
             <v-divider class="my-3" />
             <v-list>
