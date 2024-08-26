@@ -99,8 +99,11 @@
       :disabled="isSubmitting"
       @submit.prevent="submit"
     >
-      <v-card class="rounded-xl pa-4 pt-6">
-        <v-card-title style="font-size: 18px;">
+      <v-card class="rounded-xl py-2 px-4">
+        <v-card-title
+          style="font-size: 18px;"
+          class="pb-0"
+        >
           {{ dialog.id ? '編輯商品' : '新增商品' }}
         </v-card-title>
         <v-card-text class="mt-3 pa-3">
@@ -152,6 +155,7 @@
           />
           <v-checkbox
             v-model="sell.value.value"
+            density="compact"
             label="上架"
             :error-messages="sell.errorMessage.value"
           />
@@ -162,7 +166,7 @@
             density="compact"
             clearable
             no-resize
-            rows="3"
+            rows="2"
             :error-messages="description.errorMessage.value"
           />
 

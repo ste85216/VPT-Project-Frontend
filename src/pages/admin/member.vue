@@ -331,8 +331,7 @@ const schema = yup.object({
     .string()
     .required('請輸入姓名'),
   nickname: yup
-    .string()
-    .required('請輸入暱稱'),
+    .string().nullable(),
   email: yup
     .string()
     .required('請輸入信箱')
@@ -388,7 +387,6 @@ const birthday = useField('birthday')
 
 // 提交表單
 const submit = handleSubmit(async (values) => {
-  console.log('Submit function called', values)
   try {
     const payload = {
       account: values.account.toLowerCase(),
@@ -398,17 +396,13 @@ const submit = handleSubmit(async (values) => {
       phone: values.phone,
       birthday: values.birthday ? new Date(values.birthday).toISOString() : undefined
     }
-    console.log('Payload prepared', payload)
 
-    let response
     if (!isEditing.value) {
       payload.password = values.password
-      response = await api.post('/user', payload)
+      await api.post('/user', payload)
     } else {
-      response = await apiAuth.patch('/user/' + dialog.value.id, payload)
+      await apiAuth.patch('/user/' + dialog.value.id, payload)
     }
-
-    console.log('API response', response)
 
     createSnackbar({
       text: isEditing.value ? '編輯成功' : '新增成功',
@@ -464,7 +458,6 @@ const tableLoadItems = async (reset) => {
         role: 0
       }
     })
-    console.log(data)
     tableItems.value.splice(0, tableItems.value.length, ...data.result.data)
     tableItemsLength.value = data.result.memberTotal
   } catch (error) {
