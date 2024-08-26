@@ -474,7 +474,18 @@ const loadEnrollments = async () => {
   try {
     const { data } = await apiAuth.get('/enrollment')
     if (Array.isArray(data.result)) {
-      enrollments.value = data.result
+      enrollments.value = data.result.sort((a, b) => {
+        // 首先按日期升序排序（最近的日期在前）
+        const dateA = new Date(a.s_id.date)
+        const dateB = new Date(b.s_id.date)
+        if (dateA < dateB) return -1
+        if (dateA > dateB) return 1
+
+        // 如果日期相同，則按時間升序排序（較早的時間在前）
+        const timeA = a.s_id.time.split('-')[0] // 取開始時間
+        const timeB = b.s_id.time.split('-')[0]
+        return timeA.localeCompare(timeB) // 使用升序排序
+      })
     } else {
       console.error('Unexpected data format:', data)
       throw new Error('資料格式錯誤')
