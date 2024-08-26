@@ -22,7 +22,7 @@
         暱稱 :
       </v-col>
       <v-col class="px-4 py-0">
-        生日 :
+        生日 <span style="color: #d9534f;">*</span> :
       </v-col>
     </v-row>
     <v-row class="mt-4">
@@ -51,7 +51,6 @@
           type="date"
           density="compact"
           variant="outlined"
-          hide-details
           clearable
         />
       </v-col>
@@ -449,7 +448,7 @@ const schema = yup.object({
     .string()
     .required('請輸入姓名'),
   nickname: yup
-    .string(),
+    .string().nullable(),
   birthday: yup
     .string()
     .required('請輸入生日')
@@ -479,7 +478,7 @@ const schema = yup.object({
       }
     ),
   address: yup
-    .string()
+    .string().nullable()
 })
 
 const { handleSubmit, setValues, isSubmitting } = useForm({

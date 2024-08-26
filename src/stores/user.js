@@ -160,6 +160,7 @@ export const useUserStore = defineStore('user', () => {
       birthday.value = data.result.birthday
       nickname.value = data.result.nickname
 
+      console.log(nickname.value)
       // 返回更新後的數據以便在 Vue 組件中使用
       return data.result
     } catch (error) {

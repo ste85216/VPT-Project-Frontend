@@ -58,7 +58,7 @@
               @change="handleFileChange"
             >
             <v-card-title style="font-size: 18px;">
-              {{ user.name }}
+              <span v-if="!user.nickname">{{ user.name }}</span><span>{{ user.nickname }}</span>
             </v-card-title>
             <v-card-subtitle>{{ user.userId }}</v-card-subtitle>
           </v-card>
