@@ -57,7 +57,7 @@
                   >
                     <h4 class="drawer-name enhanced-text">
                       <span v-if="!user.nickname">{{ user.name }}</span>
-                      <span v-if="user.nickname">{{ user.nickname }}</span>
+                      <span>{{ user.nickname }}</span>
                     </h4>
                   </v-col>
                 </v-row>
@@ -356,7 +356,8 @@
               />
             </v-btn>
             <v-card-title style="font-size: 16px;">
-              {{ user.name }}
+              <span v-if="!user.nickname">{{ user.name }}</span>
+              <span>{{ user.nickname }}</span>
             </v-card-title>
             <v-card-subtitle
               class="text-blue-grey-darken-4"
