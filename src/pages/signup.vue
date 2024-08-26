@@ -594,34 +594,26 @@
     v-model="levelInfoDialog.open"
     max-width="1200px"
   >
-    <v-card
-      class="overflow-hidden"
-    >
-      <v-card-title style="font-size: 18px;">
+    <v-card class="overflow-hidden">
+      <v-card-title
+        style="font-size: 18px;"
+        class="d-flex justify-space-between"
+      >
         排球程度分級表
+        <v-icon
+          icon="mdi-close-circle-outline"
+          color="red-lighten-1"
+          @click="closeLevelInfoDialog"
+        />
       </v-card-title>
       <v-row>
         <v-col cols="12">
           <v-img
             src="../assets/排球程度表.jpg"
+            max-height="800"
           />
         </v-col>
-        <v-col
-          cols="12"
-          class="pt-0"
-        >
-          <v-card-actions class="pt-0 pe-4 pb-3">
-            <v-spacer />
-            <v-btn
-              variant="outlined"
-              size="small"
-              color="teal-darken-1"
-              @click="closeLevelInfoDialog"
-            >
-              確認
-            </v-btn>
-          </v-card-actions>
-        </v-col>
+        <v-col />
       </v-row>
     </v-card>
   </v-dialog>
