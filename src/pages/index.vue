@@ -107,7 +107,7 @@
                       :class="{'on-hover': isHovering}"
                       v-bind="props"
                       class="card1"
-                      to="/products/socks"
+                      to="/products/shoes"
                     >
                       <v-img
                         src="/src/assets/products/排球鞋動漫風.webp"
@@ -222,7 +222,7 @@
                           v-bind="props"
                           class="card1"
                           height="100%"
-                          to="/products/shoes"
+                          to="/products/socks"
                         >
                           <v-img
                             src="/src/assets/products/排球襪動漫風.webp"
